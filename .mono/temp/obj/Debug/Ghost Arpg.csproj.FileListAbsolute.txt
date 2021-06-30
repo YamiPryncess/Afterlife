@@ -1,0 +1,8 @@
+Z:\Projects\GhostARPG\.mono\temp\obj\Debug\Afterlife.csprojAssemblyReference.cache
+Z:\Projects\GhostARPG\.mono\temp\obj\Debug\Afterlife.AssemblyInfoInputs.cache
+Z:\Projects\GhostARPG\.mono\temp\obj\Debug\Afterlife.AssemblyInfo.cs
+Z:\Projects\GhostARPG\.mono\temp\obj\Debug\Afterlife.csproj.CoreCompileInputs.cache
+Z:\Projects\GhostARPG\.mono\temp\bin\Debug\Afterlife.dll
+Z:\Projects\GhostARPG\.mono\temp\bin\Debug\Afterlife.pdb
+Z:\Projects\GhostARPG\.mono\temp\obj\Debug\Afterlife.dll
+Z:\Projects\GhostARPG\.mono\temp\obj\Debug\Afterlife.pdb

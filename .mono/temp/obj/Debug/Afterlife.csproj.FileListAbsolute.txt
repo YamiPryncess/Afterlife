@@ -1,0 +1,8 @@
+Z:\Projects\Afterlife\.mono\temp\obj\Debug\Afterlife.csprojAssemblyReference.cache
+Z:\Projects\Afterlife\.mono\temp\obj\Debug\Afterlife.AssemblyInfoInputs.cache
+Z:\Projects\Afterlife\.mono\temp\obj\Debug\Afterlife.AssemblyInfo.cs
+Z:\Projects\Afterlife\.mono\temp\obj\Debug\Afterlife.csproj.CoreCompileInputs.cache
+Z:\Projects\Afterlife\.mono\temp\bin\Debug\Afterlife.dll
+Z:\Projects\Afterlife\.mono\temp\bin\Debug\Afterlife.pdb
+Z:\Projects\Afterlife\.mono\temp\obj\Debug\Afterlife.dll
+Z:\Projects\Afterlife\.mono\temp\obj\Debug\Afterlife.pdb
