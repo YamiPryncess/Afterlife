@@ -8,8 +8,8 @@ public class Player : KinematicBody {
     private StateMachine currentState;
     private Camera camera;
     private float gravity = -9.8f;
-    private Vector3 velocity = new Vector3();
-    Vector3 inputDir = new Vector3();
+    public Vector3 velocity = new Vector3();
+    public Vector3 inputDir = new Vector3();
     private float speed = 6;
     private float maxSpeed = 8;
     [Export] public int playerNum = 0;
@@ -55,12 +55,30 @@ public class Player : KinematicBody {
         
     }
     public override void _PhysicsProcess(float delta) {
-        checkMove(delta);
-        currentState = currentState.process(delta);
+        preProcessState(delta);
+
+        processState(delta);
+
+        postProcessState(delta);
     }
-    public void checkMove(float delta) {
-        inputDir = new Vector3();
+    public void preProcessState(float delta) {
+        //Handles Event Observer pattern changes state before state processes
+        movement(delta);//Also preProcesses important variables for state.
+    }
+    public void processState(float delta) {//StateMachine.Update() runs once per frame confirmed.
+        //Makes update() frames run regardless if state is exited before in preProcessState().
+        if(currentState.getStage() == EVENT.EXIT) {
+            currentState = currentState.process(delta);//Update hasn't happened yet, so exit first.
+        }
+        currentState = currentState.process(delta);//Now we run this always for the update.
+    }
+    public void postProcessState(float delta) {
+        //Mandatory logic post state, the state can manipulate how it happens though.
+        velocity = MoveAndSlide(velocity, Vector3.Up); //Always moves but states like idle can manipulate it.
+    }
+    public void movement(float delta) { //probably won't use but it's beneficial because delta
         if(playerNum == 0){
+            inputDir = new Vector3();
             Basis camBasis = camera.GlobalTransform.basis;
             Vector3 fixedBasisX = new Vector3(camBasis.x.x, 0, camBasis.x.z).Normalized();
             Vector3 fixedBasisZ = new Vector3(camBasis.z.x, 0, camBasis.z.z).Normalized(); 
@@ -68,32 +86,36 @@ public class Player : KinematicBody {
             if (Input.IsActionPressed("move_backward")) inputDir += fixedBasisZ * Input.GetActionStrength("move_backward");
             if (Input.IsActionPressed("move_left")) inputDir -= fixedBasisX * Input.GetActionStrength("move_left");
             if (Input.IsActionPressed("move_right")) inputDir += fixedBasisX * Input.GetActionStrength("move_right");
-        
-            if(inputDir != new Vector3(0,0,0)) {//inputDir is true
-                events["InputDirection"].validate();
-            } else {//inputDir is false
+
+            if (inputDir.Length() > 1.0) {
+                inputDir = inputDir.Normalized();
+            }
+            //inputDir.y = 0;
+            velocity = new Vector3(inputDir.x * speed, velocity.y, inputDir.z * speed);
+            if(velocity.Length() > maxSpeed){
+                velocity = velocity.Normalized() * maxSpeed;
+            }
+            velocity.y += velocity.y + gravity * delta; //Keep old gravity velocity
+
+            if(inputDir != new Vector3(0,0,0)) {//velocity is true
+               events["InputDirection"].validate();
+            } else {//velocity is false
                 events["NoDirection"].validate();
             }
         }
     }
-    public void movement(float delta) {
+
+    public void rotate(float delta) {
+        Vector3 origin = GlobalTransform.origin;
+        Vector3 pathLook = new Vector3(inputDir.x + origin.x,
+        origin.y, inputDir.z + origin.z);
+        if(inputDir.Length() > .1) {
+            LookAt(pathLook, Vector3.Up);
+        }
+    }
+    public void checkAttack(float delta) {
         if(playerNum == 0){
-            if (inputDir.Length() > 1.0) {
-                inputDir = inputDir.Normalized();
-            }
-            inputDir.y = 0;
-            Vector3 origin = GlobalTransform.origin;
-            Vector3 velocityNew = inputDir * speed;
-            if(velocityNew.Length() > maxSpeed){
-                velocityNew = velocityNew.Normalized() * maxSpeed;
-            }
-            velocityNew.y += velocity.y + gravity * delta;
-            velocity = MoveAndSlide(velocityNew, Vector3.Up);
-            Vector3 pathLook = new Vector3(velocity.x + origin.x,
-                                    origin.y, velocity.z + origin.z);
-            if(inputDir.Length() > .1) {
-                LookAt(pathLook, Vector3.Up);
-            }
+   
         }
     }
 }
@@ -125,10 +147,9 @@ public class Event {
         STATE curStateEnum = currentState.name;
         StateMachine nextState;
         if(condition.ContainsKey(curStateEnum)
-            && condition[curStateEnum] != STATE.NULL) {
+            && condition[curStateEnum] != STATE.NULL) { //If transitioning to same state, NULL stops it.
             nextState = currentState.enumToState(condition[curStateEnum]);
             if(nextState != null) {
-                currentState.setStage(EVENT.EXIT);
                 currentState.setNextState(nextState);
             }
         }
@@ -149,14 +170,15 @@ public class StateMachine {
     protected StateMachine nextState;
     protected Player player;
     public float delta = 0;
-
+    //public bool update = false;
     public StateMachine() {
         stage = EVENT.ENTER;
     }
-    public void setStage(EVENT _stage) {
-        stage = _stage;
+    public EVENT getStage() {
+        return stage;
     }
     public void setNextState(StateMachine _nextState) {
+        stage = EVENT.EXIT;
         nextState = _nextState;
     }
     public StateMachine enumToState(STATE newState) {
@@ -172,7 +194,7 @@ public class StateMachine {
       }
     }
     public virtual void Enter() { stage = EVENT.UPDATE; }
-    public virtual void Update() { stage = EVENT.UPDATE;}
+    public virtual void Update() { stage = EVENT.UPDATE; }
     public virtual void Exit() { stage = EVENT.EXIT; } 
     public StateMachine process(float _delta) { //Here are the if statements that tell all process functions to run
 	    delta = _delta;
@@ -195,6 +217,7 @@ public class Idle : StateMachine {
     }
     public override void Update() {
         base.Update();
+        player.velocity = new Vector3(0, player.velocity.y, 0);
     }
     public override void Exit() {
         base.Exit();
@@ -209,8 +232,23 @@ public class Move : StateMachine {
         base.Enter();
     }
     public override void Update() {
+        player.rotate(delta);
         base.Update();
-        player.movement(delta);
+    }
+    public override void Exit() {
+        base.Exit();
+    }
+}
+public class Jump : StateMachine {
+    public Jump(Player _player) {
+        name = STATE.MOVE;
+        player = _player;
+    }
+    public override void Enter() {
+        base.Enter();
+    }
+    public override void Update() {
+        base.Update();
     }
     public override void Exit() {
         base.Exit();
@@ -231,3 +269,28 @@ public class Attack : StateMachine {
         base.Exit();
     }
 }
+
+//Old
+    //public override void _Input(InputEvent @event) {
+    //     if(@event is InputEventKey key) {
+    //         GD.Print("Inside input");
+    //         if(key.IsActionPressed("move_forward") 
+    //         || key.IsActionPressed("move_backward") 
+    //         || key.IsActionPressed("move_left") 
+    //         || key.IsActionPressed("move_right")) {
+    //             GD.Print("Inside direction");
+    //             events["InputDirection"].validate();
+    //         } else if(key.IsActionReleased("move_forward") 
+    //         || key.IsActionReleased("move_backward") 
+    //         || key.IsActionReleased("move_left") 
+    //         || key.IsActionReleased("move_right")) {
+    //             events["NoDirection"].validate();
+    //         }
+
+    //         if(key.IsActionPressed("attack")) {
+
+    //         } else if(key.IsActionReleased("attack")) {
+
+    //         }
+    //     }
+    // }

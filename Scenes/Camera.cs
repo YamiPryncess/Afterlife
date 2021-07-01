@@ -25,7 +25,7 @@ public class Camera : Godot.Camera {
         
         targetPos = meeting.getTarget();
         targetDist = meeting.getDistance();
-        GD.Print(targetDist);
+        //GD.Print(targetDist);
         offset = new Vector3(0, 0, -1).Rotated(Vector3.Right, verticalOrbit)
                                 * (targetDist > 8 ? targetDist * (Mathf.Rad2Deg(verticalOrbit) > 60 
                                             ? verticalOrbit : Mathf.Deg2Rad(60)) : 8);
