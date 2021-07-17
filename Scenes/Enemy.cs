@@ -14,9 +14,9 @@ public class Enemy : KinematicBody {
         stats.Add("Speed", defaultVal);
 
         bTree = new BTree(this);//Start Root
-        bTree.newAction(new Approach(this, 5)).chancesPerCycle(5, 5)
+        bTree.newAction(new Approach(this, 5)).chancesPerCycle(5, 5).ascendTree()
         
-        .newDescent(new BTree(this, BTYPE.RANDOM_SELECTOR))
+        .descendTree(new BTree(this, BTYPE.RANDOM_SELECTOR))
         .newAction(new Approach(this, 2));
     }
     public override void _PhysicsProcess(float delta) {
@@ -54,7 +54,7 @@ public class BTree {
         children.Add(action);
         return action;
     }
-    public BTree newDescent(BTree bChild) {
+    public BTree descendTree(BTree bChild) { //Make it throw an error if type is Action.
         children.Add(bChild);
         return bChild;
     }
@@ -63,13 +63,18 @@ public class BTree {
 public class Action : BTree {
     KinematicBody self;
     private Action action;
+    private BTree parent;
     private int frequency = 0;
     private float probability = 0;
-    public Action(KinematicBody _self, BTYPE bType = BTYPE.ACTION) : base(_self, bType) {
+    public Action(KinematicBody _self, BTYPE bType = BTYPE.ACTION, BTree _parent = null) : base(_self, bType) {
         self = _self;
+        parent = _parent;
     }
     public void setAction(Action _action) {
         action = _action;
+    }
+    public BTree ascendTree() {
+        return parent;
     }
     public Action chancesPerCycle(int _frequency, float _probability) {
         frequency = _frequency;
