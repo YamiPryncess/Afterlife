@@ -27,11 +27,16 @@ public class Player : KinematicBody {
         events = new Dictionary<string, Event>();
         events.Add("InputDirection", new Event(this, "InputDirection", new Dictionary<STATE, STATE>()));
         events["InputDirection"].addCondition(STATE.IDLE, STATE.MOVE);
-        events["InputDirection"].addCondition(STATE.MOVE, STATE.NULL);
+        events["InputDirection"].addCondition(STATE.MOVE, STATE.NULL); //States like Attack allows player to move without transitioning to Move State.
         events.Add("NoDirection", new Event(this, "NoDirection", new Dictionary<STATE, STATE>()));
         events["NoDirection"].addCondition(STATE.MOVE, STATE.IDLE);
         events["NoDirection"].addCondition(STATE.IDLE, STATE.NULL);
-
+        events.Add("AttackPressed", new Event(this, "AttackPressed", new Dictionary<STATE, STATE>()));
+        events["AttackPressed"].addCondition(STATE.IDLE, STATE.ATTACK);
+        events["AttackPressed"].addCondition(STATE.MOVE, STATE.ATTACK);
+        events["AttackPressed"].addCondition(STATE.ATTACK, STATE.NULL); //Player may move in states like attack
+        events.Add("AttackEnd", new Event(this, "AttackEnd", new Dictionary<STATE, STATE>()));
+        events["AttackEnd"].addCondition(STATE.ATTACK, STATE.IDLE);
     }
     public StateMachine getCurrentState() {
         return (StateMachine)currentState;
@@ -151,12 +156,12 @@ public class Event {
             nextState = currentState.enumToState(condition[curStateEnum]);
             if(nextState != null) {
                 currentState.setNextState(nextState);
-            }
-        }
-    }
+            }//In the future states may also have subordinate states.
+        }//Attack for example may have move and jump as subordinates in its class.
+    }//They can do side processes and be called by validate() too.
 }
 public enum STATE {
-    IDLE, MOVE, RUN, ATTACK, JUMP, NULL
+    IDLE, MOVE, RUN, ATTACK, JUMP, FALL, NULL
 }
 public enum EVENT {
     ENTER, UPDATE, EXIT
@@ -187,6 +192,8 @@ public class StateMachine {
                 return new Move(player);
             case STATE.IDLE:
                 return new Idle(player);
+            case STATE.ATTACK:
+                return new Attack(player);
             case STATE.NULL:
                 return null;
             default: 
