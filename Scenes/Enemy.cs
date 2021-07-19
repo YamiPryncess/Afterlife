@@ -28,6 +28,9 @@ public class Enemy : KinematicBody {
         if(priorGoal != null && priorGoal.getPriorityLvl() 
                             > currentState.getPriorityLvl()) {
            currentState = priorGoal.btProcess(delta, beliefs);
+        } else if(currentState.getBType() == BTYPE.ACTION) {
+            //Wanted to startAction() with approach but how would you get the arguments for each action...
+            //I also can't figure out how to access the approach through currentState... probably can't.
         } else {
             currentState = currentState.btProcess(delta, beliefs);
         }
@@ -60,7 +63,7 @@ public class BTree {
     BELIEF condition = BELIEF.ANY;
     bool leafGoal = true;
     //Process Props
-    BTYPE bType;
+    private BTYPE bType;
     private int priorityLvl = 0;
     //Decorator Props
     List<DECORATOR> decorator; //Added in order of priority.
@@ -125,7 +128,7 @@ public class BTree {
         }
         return null;
     }
-    public BTree btProcess(float delta, Dictionary<BELIEF, bool> beliefs, bool forceRun = false) { //Processes all of its own children
+    public BTree btProcess(float delta, Dictionary<BELIEF, bool> beliefs, bool decorated = true) { //Processes all of its own children
         bSignal = BSIGNAL.STANDBY;
         if(!isGoalMet(beliefs)) switch (bType) {
             case BTYPE.SELECTOR: 
@@ -164,9 +167,12 @@ public class BTree {
             break;
             case BTYPE.RANDOM_SEQUENCE:
             break;
-            case BTYPE.ACTION:
-            break;
         }
+        bSignal = decorated ? processDecorate(bSignal) : bSignal;
+        return this;
+    }
+    public BSIGNAL processDecorate(BSIGNAL pSignal) {
+        BSIGNAL dSignal = pSignal;
 
         //Machinery After Effects
         if(bSignal == BSIGNAL.RUNNING) {
@@ -175,35 +181,34 @@ public class BTree {
             runCount = 0;
         }
 
-        //Return Statements from here down.
         for(int i = 0; i < decorator.Count; i++) {
             //Added in order of priority. First one that passes wins.
             switch (decorator[i]) {
                 case DECORATOR.SUCCEEDER:
-                    bSignal = BSIGNAL.PASS;
+                    dSignal = BSIGNAL.PASS;
                     break;
                 case DECORATOR.INVERTER:
                     if(bSignal == BSIGNAL.PASS) {
-                        bSignal = BSIGNAL.FAIL;
+                        dSignal = BSIGNAL.FAIL;
                         break;
                     } else if (bSignal == BSIGNAL.FAIL) {
-                        bSignal = BSIGNAL.PASS;
+                        dSignal = BSIGNAL.PASS;
                         break;
                     }
                     break;
                 case DECORATOR.UNTILFAIL:
                     if(bSignal != BSIGNAL.FAIL) {
-                        bSignal = BSIGNAL.RUNNING;
+                        dSignal = BSIGNAL.RUNNING;
                     }
                     break;
                 case DECORATOR.LIMITER:
                     if(runCount >= runLimit) {
-                        bSignal = BSIGNAL.FAIL;
+                        dSignal = BSIGNAL.FAIL;
                     }
                     break;
             }
         }
-        return this;
+        return dSignal;
     }
     //Supporting Methods for Construction or Processing
     private BTree findRoot(BTree descendant) {
@@ -222,48 +227,90 @@ public class BTree {
                 return true;
             }
         } 
-        return false;//Belief is not any but it fails
+        return false;//Belief is not any but it returns false
     }
     //Getters    
-    public int getPriorityLvl() {
+    public BTYPE getBType() {
+        return bType;
+    }
+    public int getPriorityLvl() {//To be available for use by calling object
         return priorityLvl;
     }
-    public KinematicBody getSelf() {
+    public KinematicBody getSelf() {//To be used by actions
         return self;
     }
 }
 
 public class Action : BTree {
-    private Action leafAction;
+    private EVENT stage;
     private int frequency = 0;
     private float probability = 0;
     private int priorityLvl;
+    private BSIGNAL aSignal = BSIGNAL.STANDBY;
     public Action(KinematicBody _self, int _priorityLvl = 0,
                 BTYPE _bType = BTYPE.ACTION) : base(_self, _priorityLvl, _bType) {
     }
-    public void setAction(Action _action) {
-        leafAction = _action;
+    public BSIGNAL getASignal() {
+        return aSignal;
     }
+    public void setASignal(BSIGNAL _aSignal) {
+        aSignal =_aSignal;
+    }
+    public virtual void Enter() { stage = EVENT.UPDATE; setASignal(BSIGNAL.RUNNING); }
+    public virtual void Update() { stage = EVENT.UPDATE; }
+    public virtual void Exit() { stage = EVENT.EXIT; } 
     public Action chancesPerCycle(int _frequency, float _probability) {
         frequency = _frequency;
         probability = _probability;
         return this;
     }
-    public virtual BSIGNAL act(KinematicBody target = null) {
-        return BSIGNAL.STANDBY;
+    public BSIGNAL processAction() {
+        if (stage == EVENT.ENTER) Enter(); 
+	    if (stage == EVENT.UPDATE) Update();
+	    aSignal = base.processDecorate(aSignal);
+        decideExit();
+
+        if (stage == EVENT.EXIT) Exit();
+        return getASignal();
+    }
+    public void decideExit() {
+        if(aSignal != BSIGNAL.RUNNING) {
+            stage = EVENT.EXIT;
+        }
     }
 }
 
 public class Approach : Action {
     private float speed = 1;
     Vector3 velocity = new Vector3();
-    public Approach (KinematicBody _self, float _speed, 
+    KinematicBody target;
+    public Approach (KinematicBody _self, float _speed,
                     int _priorityLvl = 0) : base(_self, _priorityLvl, BTYPE.ACTION) {
         speed = 1;
-        setAction(this);
     }
-    public override BSIGNAL act(KinematicBody target) {
-        velocity = target.GlobalTransform.origin - base.getSelf().GlobalTransform.origin;
-        return BSIGNAL.RUNNING;
+    public BSIGNAL startAction(KinematicBody _target) {//Wanted to startAction() with approach but how would you get the arguments for each action...
+        target = _target;
+        return base.processAction();
+    }
+    public override void Enter() {
+        base.Enter();
+        
+    }
+    public override void Update() {
+        base.Update();
+        Vector3 targetOrigin = target.GlobalTransform.origin;
+        Vector3 selfOrigin = base.getSelf().GlobalTransform.origin;
+        velocity = targetOrigin - selfOrigin;
+        base.getSelf().MoveAndSlide(velocity, Vector3.Up);//Needs nav mesh
+        if(selfOrigin.DistanceTo(targetOrigin) < 1) {
+            setASignal(BSIGNAL.PASS);
+        } else if(selfOrigin.DistanceTo(targetOrigin) > 20) {
+            setASignal(BSIGNAL.FAIL);
+        } else {
+            setASignal(BSIGNAL.RUNNING);
+        }
+    }
+    public override void Exit() {
+        base.Exit();
     }
 }
