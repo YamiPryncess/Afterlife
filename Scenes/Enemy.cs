@@ -14,10 +14,10 @@ public class Enemy : KinematicBody {
         stats.Add("Power", defaultVal);
         stats.Add("Speed", defaultVal);
 
-        bTree = new BTree(this);//Start Root
-        bTree.action(new Approach(this, 5)).chancesPerCycle(5, 5).ascendTree()
+        bTree = new BTree(this, true, 0, BTYPE.SELECTOR);//Start Root
+        bTree.action(new Approach(this, 5, 0)).chancesPerCycle(5, 5).ascendTree()
         
-        .descendTree(new BTree(this, BTYPE.RANDOM_SELECTOR))
+        .descendTree(new BTree(this, BTYPE.RANDOM_SELECTOR, 0))
         .action(new Approach(this, 2));
     }
     public override void _PhysicsProcess(float delta) {
@@ -57,7 +57,7 @@ public class BTree {
     private BTree latestGoalChild;
     //Leaf Goal Props
     private BSIGNAL bSignal = BSIGNAL.STANDBY;
-    BELIEF condition;
+    BELIEF condition = BELIEF.ANY;
     bool leafGoal = true;
     //Process Props
     BTYPE bType;
@@ -68,12 +68,21 @@ public class BTree {
     int runLimit = 1;
 
     //Constructing Methods
-    public BTree(KinematicBody _self, BTYPE _bType = BTYPE.SELECTOR, int _priorityLvl = 0, bool _isRoot = false) {
+    public BTree(KinematicBody _self, bool _isRoot, int _priorityLvl = 0, BTYPE _bType = BTYPE.SELECTOR) {//For Roots
         self = _self;
         bType = _bType;
         priorityLvl = _priorityLvl;
         isRoot = _isRoot;
-        condition = BELIEF.ANY;
+    }
+    public BTree(KinematicBody _self, BTYPE _bType, int _priorityLvl = 0) {//For Composites
+        self = _self;
+        bType = _bType;
+        priorityLvl = _priorityLvl;
+    }
+    public BTree(KinematicBody _self, int _priorityLvl = 0, BTYPE _bType = BTYPE.ACTION) {//For Actions
+        self = _self;
+        bType = _bType;
+        priorityLvl = _priorityLvl;
     }
     public BTree descendTree(BTree bChild) { //Make it throw an error if type is Action.
         children.Add(bChild);
@@ -196,9 +205,6 @@ public class BTree {
         }
         return this;
     }
-    public int getPriorityLvl() {
-        return priorityLvl;
-    }
     //Supporting Methods for Construction or Processing
     private BTree findRoot(BTree descendant) {
         BTree dRoot = descendant;
@@ -218,15 +224,22 @@ public class BTree {
         } 
         return false;//Belief is not any but it fails
     }
+    //Getters    
+    public int getPriorityLvl() {
+        return priorityLvl;
+    }
+    public KinematicBody getSelf() {
+        return self;
+    }
 }
 
 public class Action : BTree {
-    KinematicBody self;
     private Action leafAction;
     private int frequency = 0;
     private float probability = 0;
-    public Action(KinematicBody _self, BTYPE bType = BTYPE.ACTION, BTree _parent = null) : base(_self, bType) {
-        self = _self;
+    private int priorityLvl;
+    public Action(KinematicBody _self, int _priorityLvl = 0,
+                BTYPE _bType = BTYPE.ACTION) : base(_self, _priorityLvl, _bType) {
     }
     public void setAction(Action _action) {
         leafAction = _action;
@@ -242,17 +255,15 @@ public class Action : BTree {
 }
 
 public class Approach : Action {
-    private KinematicBody self;
     private float speed = 1;
     Vector3 velocity = new Vector3();
     public Approach (KinematicBody _self, float _speed, 
-                    BTYPE bType = BTYPE.ACTION) : base(_self, bType) {
-        self = _self;
+                    int _priorityLvl = 0) : base(_self, _priorityLvl, BTYPE.ACTION) {
         speed = 1;
         setAction(this);
     }
     public override BSIGNAL act(KinematicBody target) {
-        velocity = target.GlobalTransform.origin - self.GlobalTransform.origin;
+        velocity = target.GlobalTransform.origin - base.getSelf().GlobalTransform.origin;
         return BSIGNAL.RUNNING;
     }
 }
