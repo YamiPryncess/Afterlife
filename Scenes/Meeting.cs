@@ -3,12 +3,12 @@ using System.Linq;
 using System.Collections.Generic;
 
 public class Meeting : Spatial {
-    Vector3 target = new Vector3();
-    float distance = 1;
-    List<Player> players = new List<Player>();
+    public Vector3 target {set; get;} = new Vector3();
+    public float distance {set; get;} = 1;
+    public List<Spirit> players {set; get;} = new List<Spirit>();
     // Called when the node enters the scene tree for the first time.
     public override void _Ready() {
-        foreach(var child in GetChildren().OfType<Player>()){
+        foreach(var child in GetChildren().OfType<Spirit>()){
             child.AddToGroup("Players");
             players.Add(child);
         }

@@ -2,14 +2,14 @@ using Godot;
 using System;
 
 public class Camera : Godot.Camera {
-    private float distance = 6;
-    private float height = 6;
-    private float curRotation = 1.8f;
-    private float verticalOrbit = Mathf.Deg2Rad(45);
-    Vector3 offset;
-    private Vector3 targetPos;
-    private Meeting meeting;
-    private float targetDist; //Largest distance of multiple players
+    public float distance {set; get;} = 6;
+    public float height {set; get;} = 6;
+    public float curRotation {set; get;} = 1.8f;
+    public float verticalOrbit {set; get;} = Mathf.Deg2Rad(45);
+    public Vector3 offset {set; get;}
+    public Vector3 targetPos {set; get;}
+    public Meeting meeting {set; get;}
+    public float targetDist {set; get;} //Largest distance of multiple players
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready() {
