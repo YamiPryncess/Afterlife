@@ -36,7 +36,7 @@ public class StateMachine {
                 return null;
       }
     }
-    public void cancel() { frames = 0; GD.Print("Error; Canceled Frames of: ", name);}
+    public void cancel() { frames = 0; }//GD.Print("Error; Canceled Frames of: ", name);}
     public bool isFinal() { return frames == 1 ? true : false; }
     public virtual void Enter() { stage = EVENT.UPDATE; }
     public virtual void Update() { stage = EVENT.UPDATE; }

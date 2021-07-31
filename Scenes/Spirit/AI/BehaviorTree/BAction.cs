@@ -15,8 +15,8 @@ public class BAction : BNode {
             curState.cancel();//on frame end. If it doesn't then we Yeet it.
             curState.setNextState(curState.enumToState(actState));
         }
-        curState = curState.process(self.fDelta);//BAction only processes its own state.
-        return curState != null ? curState.sSignal : BSIGNAL.FAIL;
+        self.currentState = curState.process(self.fDelta);//BAction only processes its own state.
+        return  self.currentState.sSignal;
     }//Decorator still has to be added in.
 }
 // public BAction(KinematicBody _self, BTYPE _bType, Tick pm) : base(_self, _bType) {

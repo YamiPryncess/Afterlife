@@ -95,7 +95,6 @@ public class BNode {
                 if(bSignal != BSIGNAL.FAIL) reset();
                 break;
         }
-        GD.Print(bType, "-", bSignal);
         return processDecorate(bSignal);//My Choice: Reset happens before decorate.
     }
     protected BSIGNAL processDecorate(BSIGNAL pSignal) {
