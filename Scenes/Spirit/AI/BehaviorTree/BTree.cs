@@ -4,10 +4,10 @@ using System.Collections.Generic;
 public class BTree : BNode {
     public BNode constructNode {set; get;}
     public List<BGoal> childGoals {set; get;} = new List<BGoal>();//Set as soon as they're added but they must be added in depth first order.
-    public BTree() {}
+    public BTree() {constructNode = this;}
     //Constructing Methods
     public BTree(Spirit _self, BTYPE _bType) : base(_self, _bType) {
-
+        constructNode = this;
     }
     struct NodeLvl {
         public int level;
@@ -51,19 +51,9 @@ public class BTree : BNode {
     }
     public BTree action(BAction action) {
         constructNode.children.Add(action);
+        action.parent = constructNode;
         constructNode = action;
         return this;
-    }
-    public BNode goalsProcess(Dictionary<BELIEF, bool> beliefs) { //Should only be used by root
-        for(int i = 0; i < childGoals.Count; i++) {
-            if(!childGoals[i].isGoalMet(beliefs)) {
-                // latestGoalChild = childGoals[i];//changes root's state
-                return childGoals[i];
-            } //else if (Object.ReferenceEquals(childGoals[i], latestGoalChild)) {
-                //return null;
-            //} //Stops at the latestGoal rather than checking every goal.
-        }
-        return null;
     }
     public BTree chancesPerCycle(int _frequency, float _probability) {
         constructNode.frequency = _frequency;
@@ -83,4 +73,16 @@ public class BTree : BNode {
     //     } else {
     //         currentState.curBNode = currentState.curBNode.btProcess(delta, currentState);
     //     }
+    // }
+
+    //  public BNode goalsProcess(Dictionary<BELIEF, bool> beliefs) { //Should only be used by root
+    //     for(int i = 0; i < childGoals.Count; i++) {
+    //         if(!childGoals[i].isGoalMet(beliefs)) {
+    //             // latestGoalChild = childGoals[i];//changes root's state
+    //             return childGoals[i];
+    //         } //else if (Object.ReferenceEquals(childGoals[i], latestGoalChild)) {
+    //             //return null;
+    //         //} //Stops at the latestGoal rather than checking every goal.
+    //     }
+    //     return null;
     // }

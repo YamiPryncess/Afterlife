@@ -9,11 +9,13 @@ public class BAction : BNode {
     public BAction(Spirit _self, STATE _actState) : base(_self, BTYPE.ACTION) {
         actState = _actState;
     }
-    public override BSIGNAL process() {
-        if(self.currentState.name != actState) {
+    public BSIGNAL aProcess() {
+        curState = self.currentState;
+        if(curState.name != actState) {//Prior node should return success
+            curState.cancel();//on frame end. If it doesn't then we Yeet it.
             curState.setNextState(curState.enumToState(actState));
         }
-        curState = curState.process(self.fDelta);
+        curState = curState.process(self.fDelta);//BAction only processes its own state.
         return curState != null ? curState.sSignal : BSIGNAL.FAIL;
     }//Decorator still has to be added in.
 }

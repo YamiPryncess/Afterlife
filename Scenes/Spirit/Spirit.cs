@@ -22,11 +22,15 @@ public class Spirit : KinematicBody {
     public Dictionary<BELIEF, bool> beliefs {set; get;} = new Dictionary<BELIEF, bool>();
     public override void _Ready() {
         master = GetNode<Master>("/root/Master");
-        camera = GetNode<Camera>("../Camera");
         currentState = new Idle(this);
         
-        master.mechanics.Call("basics", this);
-
+        if(isPlayer()) {
+            master.mechanics.Call("basics", this);
+            camera = GetNode<Camera>("../Camera");
+        }
+        else if(player == -1) {
+            master.behavior.Call("sample", this);
+        }
         float[] defaultVal = new float[3]{10,10,0};
         stats.Add("Health", defaultVal);
         stats.Add("Focus", defaultVal);

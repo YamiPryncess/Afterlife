@@ -18,6 +18,10 @@ config/icon="res://icon.png"
 
 Master="*res://Scenes/Autoloads/Master.tscn"
 
+[global]
+
+framerate=false
+
 [input]
 
 move_forward_1={
