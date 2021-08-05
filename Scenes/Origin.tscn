@@ -39,6 +39,7 @@ player = 1
 
 [node name="Player2" parent="Characters/Meeting" instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.15632, 1.32961, 5.87161 )
+player = 0
 
 [node name="Camera" type="Camera" parent="Characters/Meeting"]
 transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -0.753012, 1.50324, -21.7542 )

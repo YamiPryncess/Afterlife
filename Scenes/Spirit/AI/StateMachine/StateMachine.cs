@@ -7,10 +7,8 @@ public class StateMachine {
     public State nextState {set; get;}
     public Spirit self {set; get;}
     public AnimationPlayer animator {set; get;}
-    public bool updated {set; get;} = false;
     public bool finalFrame {set; get;} = false;
     public bool enforceUpdate {set; get;} = false;
-    public BSIGNAL sSignal {set; get;} = BSIGNAL.FAIL;
     public StateMachine(Spirit _self) {
         self = _self;
         animator = self.GetNode<AnimationPlayer>("Animator");
@@ -35,17 +33,29 @@ public class StateMachine {
       }
     }
     public void process(float delta) {
-        updated = false;
-        STAGE stage = currentState.process(delta);
-        //runs either enter->update, update, update->exit, or exit alone.
-        if(stage == STAGE.EXIT) {
-            if(nextState == null) nextState = new Idle(this);
-            currentState = nextState;
-            nextState = null;
-            if(updated == false) {
-                stage = currentState.process(delta);
-            } 
+        //currentState.process() runs either (1)enter->update, (2)update, (3)update->exit, or (4)exit alone.
+        switch(currentState.exited) {
+            case true: //if true then Previous frame (3) both updated and exited.
+                restate();
+                currentState.process(delta); //(1) updating a new state
+            break;
+            case false:
+                if(currentState.stage == STAGE.EXIT) {
+                    currentState.process(delta);//(4)exiting currentState without update.
+                    if(currentState.exited) {
+                        restate();
+                        currentState.process(delta);//(1)make sure 1 update still happens for the frame.
+                    }
+                } else {
+                    currentState.process(delta); //(1)/(2)/(3) updates alone or with entry or exit. 
+                }
+            break;
         }
+    }
+    public void restate() {
+        if(nextState == null) nextState = new Idle(this);
+        currentState = nextState;
+        nextState = null;
     }
     public void cancel() { finalFrame = true; animator.Stop(true); }
 }

@@ -9,6 +9,7 @@ public class State {
     public AnimationPlayer animator {set; get;}
     public float delta {set; get;} = 0;
     public int frames {set; get;} = 0;
+    public bool exited {set; get;} = false;
     public bool succeeding = false; //Used for enforced animations who may succeed upon a callback event
     public BSIGNAL sSignal {set; get;} = BSIGNAL.FAIL;//But do not return a signal until the last frame.
     public State(StateMachine _parent) {
@@ -24,7 +25,6 @@ public class State {
     }
     public virtual void Update() { //No need to redundantly set stage to update again.
         stage = STAGE.UPDATE;
-        parent.updated = true;
         animator.Advance(delta);
         if(parent.enforceUpdate == true && parent.finalFrame == true) {
             sSignal = succeeding == true ? BSIGNAL.PASS : BSIGNAL.FAIL;
@@ -35,13 +35,12 @@ public class State {
         GD.Print("Player ", self.player, " ", name, ": ", frames, 
         " isPlaying: ", animator.IsPlaying(), " stage: ", stage, " nextState: ", parent.nextState);
     }
-    public virtual void Exit() { stage = STAGE.EXIT; } 
-    public STAGE process(float _delta) { //Here are the if statements that tell all process functions to run
+    public virtual void Exit() { stage = STAGE.EXIT; exited = true;} 
+    public void process(float _delta) { //Here are the if statements that tell all process functions to run
 	    delta = _delta;
         if (stage == STAGE.ENTER) Enter();
 	    if (stage == STAGE.UPDATE) Update(); 
 	    if (stage == STAGE.EXIT) Exit();
-        return stage;
     }
 }
 

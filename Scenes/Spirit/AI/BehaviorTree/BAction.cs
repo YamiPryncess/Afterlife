@@ -16,7 +16,7 @@ public class BAction : BNode {
         }
         self.sm.process(self.idleDelta);//BAction only processes its own state.
         curState = null;
-        return  self.sm.sSignal;
+        return  self.sm.currentState.sSignal;
     }//Decorator still has to be added in.
 }
 // public BAction(KinematicBody _self, BTYPE _bType, Tick pm) : base(_self, _bType) {
