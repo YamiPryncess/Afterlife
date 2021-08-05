@@ -1,10 +1,9 @@
 using Godot;
 using System.Collections.Generic;
 
-public class Jump : StateMachine {
-    public Jump(Spirit _player) {
+public class Jump : State {
+    public Jump(StateMachine _parent) : base(_parent) {
         name = STATE.MOVE;
-        player = _player;
     }
     public override void Enter() {
         base.Enter();

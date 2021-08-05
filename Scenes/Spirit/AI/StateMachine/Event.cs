@@ -22,14 +22,13 @@ public class Event {
         condition.Add(curCondition, nextTransition);
     }
     public void validate(Spirit player) {
-        StateMachine currentState = player.getCurrentState();
-        STATE curStateEnum = currentState.name;
-        StateMachine nextState;
+        StateMachine sm = player.sm;
+        STATE curStateEnum = sm.currentState.name;
         if(condition.ContainsKey(curStateEnum)
             && condition[curStateEnum] != STATE.NULL) { //If transitioning to same state, NULL stops it.
-            nextState = currentState.enumToState(condition[curStateEnum]);
+            State nextState = sm.enumToState(condition[curStateEnum]);
             if(nextState != null) {
-                currentState.setNextState(nextState);
+                sm.setNextState(nextState);
             }//In the future states may also have subordinate states.
         }//Attack for example may have move and jump as subordinates in its class.
     }//They can do side processes and be called by validate() too.

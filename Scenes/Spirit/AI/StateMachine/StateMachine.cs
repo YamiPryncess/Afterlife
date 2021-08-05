@@ -2,64 +2,50 @@ using Godot;
 using System.Collections.Generic;
 
 public class StateMachine {
-    public STATE name {set; get;}
-    public EVENT stage {set; get;}
-    public StateMachine nextState {set; get;}
-    public Spirit player {set; get;}
-    public float delta {set; get;} = 0;
-    
-    public bool contact = false; //Attack animations run once per state switch.
-    public int frames {set; get;} = 0; //If contact is true, and frames = 1,
-    public BSIGNAL sSignal {set; get;} = BSIGNAL.FAIL;//we return successful for attacks.
-    //public bool update = false;
-    public StateMachine() {
-        stage = EVENT.ENTER;
+    public STAGE stage {set; get;}
+    public State currentState {set; get;}
+    public State nextState {set; get;}
+    public Spirit self {set; get;}
+    public AnimationPlayer animator {set; get;}
+    public bool updated {set; get;} = false;
+    public bool finalFrame {set; get;} = false;
+    public bool enforceUpdate {set; get;} = false;
+    public BSIGNAL sSignal {set; get;} = BSIGNAL.FAIL;
+    public StateMachine(Spirit _self) {
+        self = _self;
+        animator = self.GetNode<AnimationPlayer>("Animator");
+        currentState = new Idle(this);
     }
-    public EVENT getStage() {
-        return stage;
-    }
-    public void setNextState(StateMachine _nextState) {
-        stage = EVENT.EXIT;
+    public void setNextState(State _nextState) {
+        if(!enforceUpdate) currentState.stage = STAGE.EXIT;
         nextState = _nextState;
     }
-    public StateMachine enumToState(STATE newState) {
+    public State enumToState(STATE newState) {
         switch (newState){
             case STATE.MOVE:
-                return new Move(player);
+                return new Move(this);
             case STATE.IDLE:
-                return new Idle(player);
+                return new Idle(this);
             case STATE.ATTACK:
-                return new Attack(player);
+                return new Attack(this);
             case STATE.NULL:
                 return null;
             default: 
                 return null;
       }
     }
-    public void cancel() { frames = 0; }//GD.Print("Error; Canceled Frames of: ", name);}
-    public bool isFinal() { return frames == 1 ? true : false; }
-    public virtual void Enter() { stage = EVENT.UPDATE; }
-    public virtual void Update() { stage = EVENT.UPDATE; }
-    public virtual void Exit() { stage = EVENT.EXIT; } 
-    public StateMachine process(float _delta) { //Here are the if statements that tell all process functions to run
-	    delta = _delta;
-        frames = Mathf.Clamp(frames, 0, 30);
-        if(frames > 0) frames--;//Disables exit unless frames drop to zero or are canceled.
-
-        if (stage == EVENT.ENTER) Enter(); //Enter will change stage to update
-	    if (stage == EVENT.UPDATE || frames > 0) Update(); //Update runs mandatory, once per frame-
-	    else if (stage == EVENT.EXIT) {//If update is missed due to stage = Exit-
-		    Exit(); //Update will be called again right after exit on next line. 
-		    nextState.process(_delta);//Stage is set to Exit by observer pattern-
-            return nextState;//or behavior tree. Exit never happens from within
-        }//the machine else the .process()frame Update recursion may cause a stack error.
-        return this;//Returns either the current running state or the new state in Exit().
+    public void process(float delta) {
+        updated = false;
+        STAGE stage = currentState.process(delta);
+        //runs either enter->update, update, update->exit, or exit alone.
+        if(stage == STAGE.EXIT) {
+            if(nextState == null) nextState = new Idle(this);
+            currentState = nextState;
+            nextState = null;
+            if(updated == false) {
+                stage = currentState.process(delta);
+            } 
+        }
     }
-}
-
-public enum STATE {
-    IDLE, MOVE, RUN, ATTACK, JUMP, FALL, NULL
-}
-public enum EVENT {
-    ENTER, UPDATE, EXIT
+    public void cancel() { finalFrame = true; animator.Stop(true); }
 }

@@ -12,12 +12,13 @@ public class Mechanics : Object {
         s.events["NoDirection"].addCondition(STATE.IDLE, STATE.NULL);
         
         s.events.Add("AttackPressed", new Event("AttackPressed", new Dictionary<STATE, STATE>()));
-        s.events["AttackPressed"].addCondition(STATE.IDLE, STATE.ATTACK);
-        s.events["AttackPressed"].addCondition(STATE.MOVE, STATE.ATTACK);
-        s.events["AttackPressed"].addCondition(STATE.ATTACK, STATE.NULL); //Player may move in states like attack
-        
-        s.events.Add("AttackEnd", new Event("AttackEnd", new Dictionary<STATE, STATE>()));
-        s.events["AttackEnd"].addCondition(STATE.ATTACK, STATE.IDLE);
+        s.events["AttackPressed"].addCondition(STATE.IDLE, STATE.ATTACK);//Idle can be set back by the state itself.
+        s.events["AttackPressed"].addCondition(STATE.MOVE, STATE.ATTACK);//Switching inside of state might be more dominant than in mechanics though. Not sure yet, need to think and test.
+        s.events["AttackPressed"].addCondition(STATE.ATTACK, STATE.ATTACK); //Player may move in states like attack
+                                                //Attack -> Attack repeats attack but in the future it may go to Attack 2
+        string animEnd = "AnimEnd";
+        s.events.Add(animEnd, new Event(animEnd, new Dictionary<STATE, STATE>()));
+        s.events[animEnd].addCondition(STATE.ATTACK, STATE.IDLE);
     }
     public void crimson() {
 

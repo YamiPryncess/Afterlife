@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Meeting : Spatial {
     public Vector3 target {set; get;} = new Vector3();
-    public float distance {set; get;} = 1;
+    public float largestDist {set; get;} = 1;
     public List<Spirit> players {set; get;} = new List<Spirit>();
     // Called when the node enters the scene tree for the first time.
     public override void _Ready() {
@@ -16,14 +16,7 @@ public class Meeting : Spatial {
 
     public override void _PhysicsProcess(float delta) {
         target = playerCenter();
-        distance = playerDist();
-    }
-
-    public Vector3 getTarget() {
-        return target;
-    }
-    public float getDistance() {
-        return distance;
+        largestDist = playerDist();
     }
 
     public Vector3 playerCenter() {

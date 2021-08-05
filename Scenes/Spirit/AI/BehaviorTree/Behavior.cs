@@ -8,7 +8,7 @@ public class Behavior : Object {
         bTree.action(new BAction(self, STATE.IDLE)).chancesPerCycle(5, 5).ascendTree()
         
         .descendTree(new BNode(self, BTYPE.SEQUENCE))
-        .action(new BAction(self, STATE.MOVE));
+        .action(new BAction(self, STATE.ATTACK));
         BGoal bGoal = new BGoal(self, myGoal);
         
         self.bTree = bTree;
