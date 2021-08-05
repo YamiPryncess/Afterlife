@@ -15,7 +15,6 @@ public class BAction : BNode {
             self.sm.setNextState(self.sm.enumToState(actState));//that STAGE.EXIT goes through here.
         }
         self.sm.process(self.idleDelta);//BAction only processes its own state.
-        curState = null;
         return  self.sm.currentState.sSignal;
     }//Decorator still has to be added in.
 }

@@ -11,6 +11,7 @@ public class Attack : State {
     }
     public override void Update() {
         base.Update();
+        succeed();//succeed for now but later requires callback.
     }
     public override void Exit() {
         base.Exit();

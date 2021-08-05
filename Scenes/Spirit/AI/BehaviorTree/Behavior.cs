@@ -4,10 +4,14 @@ using System.Collections.Generic;
 public class Behavior : Object {
     public Behavior() {} //preferences dictionary will have to be created as a godot dictionary.
     public void sample(Spirit self) {
-        BTree bTree = new BTree(self, BTYPE.SELECTOR);//Start Root
+        BTree bTree = new BTree(self, BTYPE.SEQUENCE);//Start Root
         bTree.action(new BAction(self, STATE.IDLE)).chancesPerCycle(5, 5).ascendTree()
         
         .descendTree(new BNode(self, BTYPE.SEQUENCE))
+        .action(new BAction(self, STATE.NAVIGATE)).ascendTree()
+        .action(new BAction(self, STATE.ATTACK)).ascendTree()
+        .action(new BAction(self, STATE.ATTACK)).ascendTree()
+        .action(new BAction(self, STATE.ATTACK)).ascendTree()
         .action(new BAction(self, STATE.ATTACK));
         BGoal bGoal = new BGoal(self, myGoal);
         

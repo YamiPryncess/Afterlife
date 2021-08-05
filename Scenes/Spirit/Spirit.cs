@@ -26,6 +26,7 @@ public class Spirit : KinematicBody {
     public override void _Ready() {
         master = GetNode<Master>("/root/Master");
         sm = new StateMachine(this);
+        reality = new Reality();
         
         if(isPlayer()) {
             master.mechanics.Call("basics", this);
@@ -33,6 +34,7 @@ public class Spirit : KinematicBody {
         }
         else if(player == -1) {
             master.behavior.Call("sample", this);
+            reality.target = (Spirit)GetTree().GetNodesInGroup("Players")[0];
         }
         float[] defaultVal = new float[3]{10,10,0};
         stats.Add("Health", defaultVal);
@@ -83,7 +85,7 @@ public class Spirit : KinematicBody {
     public void preProcessState(float delta) {
         //Handles Event Observer pattern changes state before state processes
         endAnimator(delta);
-        //if(!moveBool) 
+        if(!moveBool) 
         movement(delta);//Also preProcesses important variables for state.
         attack(delta);
     }

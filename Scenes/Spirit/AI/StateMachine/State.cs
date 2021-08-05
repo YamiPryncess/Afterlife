@@ -8,6 +8,7 @@ public class State {
     public Spirit self {set; get;}
     public AnimationPlayer animator {set; get;}
     public float delta {set; get;} = 0;
+    public float seconds {set; get;} = 0;
     public int frames {set; get;} = 0;
     public bool exited {set; get;} = false;
     public bool succeeding = false; //Used for enforced animations who may succeed upon a callback event
@@ -25,6 +26,7 @@ public class State {
     }
     public virtual void Update() { //No need to redundantly set stage to update again.
         stage = STAGE.UPDATE;
+        seconds += delta;
         animator.Advance(delta);
         if(parent.enforceUpdate == true && parent.finalFrame == true) {
             sSignal = succeeding == true ? BSIGNAL.PASS : BSIGNAL.FAIL;
@@ -42,10 +44,20 @@ public class State {
 	    if (stage == STAGE.UPDATE) Update(); 
 	    if (stage == STAGE.EXIT) Exit();
     }
-}
-
-public enum STATE {
-    IDLE, MOVE, RUN, ATTACK, JUMP, FALL, NULL
+    public void succeed() {
+        succeeding = true; 
+        if(!parent.enforceUpdate) { 
+            sSignal = BSIGNAL.PASS;
+            stage = STAGE.EXIT;
+        } 
+    }
+    public void fail() {
+        succeeding = false;
+        if(!parent.enforceUpdate) {
+            sSignal = BSIGNAL.FAIL;
+            stage = STAGE.EXIT;
+        }
+    }
 }
 public enum STAGE {
     ENTER, UPDATE, EXIT

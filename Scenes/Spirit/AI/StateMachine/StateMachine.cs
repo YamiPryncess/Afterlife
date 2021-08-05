@@ -26,6 +26,8 @@ public class StateMachine {
                 return new Idle(this);
             case STATE.ATTACK:
                 return new Attack(this);
+            case STATE.NAVIGATE:
+                return new Navigate(this);
             case STATE.NULL:
                 return null;
             default: 
@@ -58,4 +60,7 @@ public class StateMachine {
         nextState = null;
     }
     public void cancel() { finalFrame = true; animator.Stop(true); }
+}
+public enum STATE {
+    IDLE, MOVE, RUN, ATTACK, JUMP, FALL, NAVIGATE, NULL
 }
