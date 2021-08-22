@@ -34,8 +34,8 @@ public class State {
         } else {
             sSignal = BSIGNAL.RUNNING;
         } frames++;
-        GD.Print("Player ", self.player, " ", name, ": ", frames, 
-        " isPlaying: ", animator.IsPlaying(), " stage: ", stage, " nextState: ", parent.nextState);
+        //GD.Print("Player ", self.player, " ", name, ": ", frames, 
+        //" isPlaying: ", animator.IsPlaying(), " stage: ", stage, " nextState: ", parent.nextState);
     }
     public virtual void Exit() { stage = STAGE.EXIT; exited = true;} 
     public void process(float _delta) { //Here are the if statements that tell all process functions to run

@@ -10,4 +10,9 @@ public class Master : Node {
     public override void _Process(float delta) {
 
     }
+
+    public override void _ExitTree() {
+        behavior.Free();
+        mechanics.Free();
+    }
 }

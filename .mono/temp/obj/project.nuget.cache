@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "IdbHJ6Bb5NvuCRPiw0JhddS1RMVjRfIZPfIxucRUKR9JdT97Im65s2Ba6O7DbEcIut8C3iJAPwP+FEkm9Kf/0Q==",
+  "dgSpecHash": "lA/6HYnPOl0930f/N6k/anEyowSMg5jfwxR/gsASbW896uOTZZcMATsp4/j81huequVt0m3UKamGZeoFyE+mgw==",
   "success": true,
   "projectFilePath": "Z:\\Projects\\Afterlife\\Afterlife.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\zen86\\.nuget\\packages\\newtonsoft.json\\11.0.2\\newtonsoft.json.11.0.2.nupkg.sha512"
+  ],
   "logs": []
 }
