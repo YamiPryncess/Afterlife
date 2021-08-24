@@ -14,6 +14,8 @@ public class Spirit : KinematicBody {
     public float maxSpeed {set; get;} = 16;
     public Vector3 velocity {set; get;} = new Vector3();
     public Vector3 inputDir {set; get;} = new Vector3();
+    public Vector3 rotateDir {set; get;} = new Vector3();
+    //public bool autoInput {set; get;} = false;
     [Export] public int player {set; get;} = -1;
     public Dictionary<string, Event> events {set; get;} = 
         new Dictionary<string, Event>();
@@ -97,8 +99,9 @@ public class Spirit : KinematicBody {
         rotate(delta);
         endLoop();
     }
-    public void endLoop() {//For restarting state. For use in preProcessState which is used in IdleProcess().
+    public void endLoop() {//For restarting state.
         moveBool = false;
+        inputDir = Vector3.Zero;
     }
     public void endAnimator(float delta) {
         if(!sm.animator.IsPlaying() && sm.nextState == null && animBool == true) {
@@ -113,6 +116,10 @@ public class Spirit : KinematicBody {
     }
     public void enforce_anim() {
         sm.enforceUpdate = true;
+    }
+    public void moveTurn(Vector3 vector) {
+        inputDir = vector;
+        rotateDir = vector;
     }
     public void moveInput() {
         inputDir = new Vector3();
@@ -130,10 +137,10 @@ public class Spirit : KinematicBody {
             inputDir += fixedBasisX * Input.GetActionStrength(pad("move_right"));}
         
         if(!inputPressed) inputDir = Vector3.Zero;
-
         if (inputDir.Length() > 1.0) {
             inputDir = inputDir.Normalized();
         }
+        rotateDir = inputDir;
 
         moveBool = true;
         if(sm.enforceUpdate) return;
@@ -170,9 +177,9 @@ public class Spirit : KinematicBody {
     }
     public void rotate(float delta) {
         Vector3 origin = GlobalTransform.origin;
-        Vector3 pathLook = new Vector3(inputDir.x + origin.x,
-        origin.y, inputDir.z + origin.z);
-        if(inputDir.Length() > .1) {
+        Vector3 pathLook = new Vector3(rotateDir.x + origin.x,
+        origin.y, rotateDir.z + origin.z);
+        if(rotateDir.Length() > .1) {
             LookAt(pathLook, Vector3.Up);
         }
     }

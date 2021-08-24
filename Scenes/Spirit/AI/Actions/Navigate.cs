@@ -60,7 +60,7 @@ public class Navigate : State {
                 if(reality.pathInx < reality.path.Length-1 && reachedPoint()) {//Reached point and still not at the end of the path array.
                         reality.pathInx++;
                 }
-                self.inputDir = (reality.path[reality.pathInx] - self.GlobalTransform.origin).Normalized();
+                self.moveTurn((reality.path[reality.pathInx] - self.GlobalTransform.origin).Normalized());
             }    
             navDelta = count(navDelta, deltaLimit);
         }
@@ -68,7 +68,6 @@ public class Navigate : State {
     public override void Exit() {
         reality.path = null;
         reality.pathInx = 0;
-        self.inputDir = Vector3.Zero;
         //reality.target = null; //Not sure how I'll handle target management yet.
         base.Exit();
     }
