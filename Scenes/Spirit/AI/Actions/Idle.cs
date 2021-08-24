@@ -10,7 +10,6 @@ public class Idle : State {
     }
     public override void Update() {
         base.Update();
-        self.velocity = new Vector3(0, self.velocity.y, 0);
         if(seconds > 3) {
             succeed();
         }

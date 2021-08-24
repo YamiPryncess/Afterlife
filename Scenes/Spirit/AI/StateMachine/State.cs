@@ -6,6 +6,7 @@ public class State {
     public StateMachine parent {set; get;}
     public STAGE stage {set; get;}
     public Spirit self {set; get;}
+    public Reality reality {set; get;}
     public AnimationPlayer animator {set; get;}
     public float delta {set; get;} = 0;
     public float seconds {set; get;} = 0;
@@ -43,6 +44,18 @@ public class State {
         if (stage == STAGE.ENTER) Enter();
 	    if (stage == STAGE.UPDATE) Update(); 
 	    if (stage == STAGE.EXIT) Exit();
+    }
+    public float count(float current, float limit) {
+        if(current >= limit) {
+            return current;
+        } 
+        return current + delta;
+    }
+    public bool sufficeTime(float current, float limit) {
+        if(current >= limit) {
+            return true;
+        }
+        return false;
     }
     public void succeed() {
         succeeding = true; 

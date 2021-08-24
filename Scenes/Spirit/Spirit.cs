@@ -10,8 +10,8 @@ public class Spirit : KinematicBody {
     public Camera camera {set; get;}
     public float idleDelta {set; get;}
     public float gravity {set; get;} = -9.8f;
-    public float speed {set; get;} = 6;
-    public float maxSpeed {set; get;} = 8;
+    public float speed {set; get;} = 12;
+    public float maxSpeed {set; get;} = 16;
     public Vector3 velocity {set; get;} = new Vector3();
     public Vector3 inputDir {set; get;} = new Vector3();
     [Export] public int player {set; get;} = -1;
@@ -80,19 +80,24 @@ public class Spirit : KinematicBody {
         }
     }
     public override void _PhysicsProcess(float delta) {
+        //if(player == 1) GD.Print(sm.currentState.name, " ", velocity); 
         postProcessState(delta);
     }
     public void preProcessState(float delta) {
         //Handles Event Observer pattern changes state before state processes
         endAnimator(delta);
         if(!moveBool) 
-        movement(delta);//Also preProcesses important variables for state.
+        moveInput();//Also preProcesses important variables for state.
         attack(delta);
     }
     public void postProcessState(float delta) {
         //Mandatory logic post state, the state can manipulate how it happens though.
+        moveVel();
         velocity = MoveAndSlide(velocity, Vector3.Up); //Always moves but states like idle can manipulate it.
         rotate(delta);
+        endLoop();
+    }
+    public void endLoop() {//For restarting state. For use in preProcessState which is used in IdleProcess().
         moveBool = false;
     }
     public void endAnimator(float delta) {
@@ -109,39 +114,60 @@ public class Spirit : KinematicBody {
     public void enforce_anim() {
         sm.enforceUpdate = true;
     }
-    public void movement(float delta) { //probably won't use but it's beneficial because delta
+    public void moveInput() {
         inputDir = new Vector3();
         Basis camBasis = camera.GlobalTransform.basis;
         Vector3 fixedBasisX = new Vector3(camBasis.x.x, 0, camBasis.x.z).Normalized();
         Vector3 fixedBasisZ = new Vector3(camBasis.z.x, 0, camBasis.z.z).Normalized(); 
-        if (Input.IsActionPressed(pad("move_forward"))) 
-            inputDir -= fixedBasisZ * Input.GetActionStrength(pad("move_forward"));
-        if (Input.IsActionPressed(pad("move_backward"))) 
-            inputDir += fixedBasisZ * Input.GetActionStrength(pad("move_backward"));
-        if (Input.IsActionPressed(pad("move_left")))
-            inputDir -= fixedBasisX * Input.GetActionStrength(pad("move_left"));
-        if (Input.IsActionPressed(pad("move_right")))
-            inputDir += fixedBasisX * Input.GetActionStrength(pad("move_right"));
+        bool inputPressed = false;
+        if (Input.IsActionPressed(pad("move_forward"))) { inputPressed = true;
+            inputDir -= fixedBasisZ * Input.GetActionStrength(pad("move_forward"));}
+        if (Input.IsActionPressed(pad("move_backward"))) { inputPressed = true;
+            inputDir += fixedBasisZ * Input.GetActionStrength(pad("move_backward"));}
+        if (Input.IsActionPressed(pad("move_left"))) { inputPressed = true;
+            inputDir -= fixedBasisX * Input.GetActionStrength(pad("move_left"));}
+        if (Input.IsActionPressed(pad("move_right"))) { inputPressed = true;
+            inputDir += fixedBasisX * Input.GetActionStrength(pad("move_right"));}
+        
+        if(!inputPressed) inputDir = Vector3.Zero;
+
         if (inputDir.Length() > 1.0) {
             inputDir = inputDir.Normalized();
         }
-        //inputDir.y = 0;
-        velocity = new Vector3(inputDir.x * speed, velocity.y, inputDir.z * speed);
-        if(velocity.Length() > maxSpeed){
-            velocity = velocity.Normalized() * maxSpeed;
-        }
-        velocity += new Vector3(velocity.x, 
-        velocity.y + gravity, velocity.z); //Keep old gravity velocity
 
         moveBool = true;
         if(sm.enforceUpdate) return;
-        if(inputDir != new Vector3(0,0,0) ) {//velocity is true
+        if(inputDir != Vector3.Zero ) {//velocity is true
             events["InputDirection"].validate(this);
         } else {//velocity is false
             events["NoDirection"].validate(this);
         }
     }
-
+    public Vector3 chooseVel(VELOCITY choice = VELOCITY.CONTROL) {
+        switch(choice) {
+            case VELOCITY.CONTROL:
+                return inputDir * speed;
+            case VELOCITY.SKII:
+                return velocity + (inputDir * speed);
+            case VELOCITY.PINBALL:
+                return (velocity + inputDir)  * speed;
+            case VELOCITY.SOAP:
+                return (inputDir != Vector3.Zero ? velocity : Vector3.Zero) + (inputDir * speed);
+            case VELOCITY.RUBBER:
+                return ((inputDir != Vector3.Zero ? velocity : Vector3.Zero) + inputDir)  * speed;
+        }
+        return Vector3.Zero;
+    }
+    public void moveVel() {
+        Vector3 speedDir = chooseVel(VELOCITY.CONTROL);
+        if(speedDir.Length() > maxSpeed){
+            speedDir = speedDir.Normalized() * maxSpeed;
+        }
+        float newGravity = IsOnFloor() ? 0 : gravity;
+        velocity = new Vector3(speedDir.x, 
+        velocity.y + newGravity, speedDir.z);
+        //if(player == -1) GD.Print(velocity);
+    }
     public void rotate(float delta) {
         Vector3 origin = GlobalTransform.origin;
         Vector3 pathLook = new Vector3(inputDir.x + origin.x,
@@ -156,6 +182,9 @@ public class Spirit : KinematicBody {
             events["AttackPressed"].validate(this);
         }
     }
+}
+public enum VELOCITY {
+    CONTROL, ACCELERATE, DEACCELERATE, PINBALL, SKII, RUBBER, SOAP
 }
 
 //Old
@@ -189,3 +218,24 @@ public class Spirit : KinematicBody {
     //         }
     //     }
     // }
+    //moveVel() {
+        //Old Code that is redundant
+        // //inputDir.y = 0;
+        // velocity = new Vector3(inputDir.x * speed, velocity.y, inputDir.z * speed);
+        // if(velocity.Length() > maxSpeed){
+        //     velocity = velocity.Normalized() * maxSpeed;
+        // }
+        // velocity += new Vector3(velocity.x, 
+        // velocity.y + gravity, velocity.z); //Keep old gravity velocity
+        //velocity.y plus velocity.y (double gravity?) gives an 
+        //interesting effect on resulting linearVelocity.y from move and slide 
+
+
+        //Blood Souls on Ice
+        //         velocity = new Vector3(velocity.x+inputDir.x * speed, velocity.y, velocity.z +inputDir.z * speed);
+        // if(velocity.Length() > maxSpeed){
+        //     velocity = velocity.Normalized() * maxSpeed;
+        // }
+        // velocity += new Vector3(velocity.x, 
+        // velocity.y + gravity, velocity.z); //Keep old gravity velocity
+    //}

@@ -20,7 +20,7 @@ Master="*res://Scenes/Autoloads/Master.tscn"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/Batch_Model_Inheritor/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/Batch_Model_Inheritor/plugin.cfg", "res://addons/zylann.scatter/plugin.cfg" )
 
 [global]
 
