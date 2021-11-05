@@ -8,11 +8,11 @@ public class Attack : State {
     public override void Enter() {
         base.Enter();
         animator.Play("Attack_1");
+        if(self.reality.target != null) 
+            self.rotateDir = self.reality.target.GlobalTransform.origin - self.GlobalTransform.origin;
     }
     public override void Update() {
         base.Update();
-        if(self.reality.target != null) 
-            self.rotateDir = self.reality.target.GlobalTransform.origin - self.GlobalTransform.origin;
         succeed();//succeed for now but later requires callback.
     }
     public override void Exit() {

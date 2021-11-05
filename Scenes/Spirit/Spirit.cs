@@ -9,11 +9,13 @@ public class Spirit : KinematicBody {
     public StateMachine sm {set; get;}
     public Camera camera {set; get;}
     public float idleDelta {set; get;}
-    public float gravity {set; get;} = -9.8f;
+    public float gravity {set; get;} = -9.8f/3;
     public float speed {set; get;} = 12;
+    public float jumpImpulse {set; get;} = 50;
     public float maxSpeed {set; get;} = 16;
     public Vector3 velocity {set; get;} = new Vector3();
     public Vector3 inputDir {set; get;} = new Vector3();
+    //public float jumpSum {set; get;}
     public Vector3 rotateDir {set; get;} = new Vector3();
     //public bool autoInput {set; get;} = false;
     [Export] public int player {set; get;} = -1;
@@ -25,6 +27,10 @@ public class Spirit : KinematicBody {
     public bool animBool {set; get;} = false;
     public bool moveBool {set; get;} = false;
     public bool jumpBool {set; get;} = false;
+    public int phaseVal = 0;
+    public float phaseInterval = 0;
+    public bool phaseBool = false;
+    public int phasable = 50;
     public override void _Ready() {
         master = GetNode<Master>("/root/Master");
         sm = new StateMachine(this);
@@ -90,10 +96,17 @@ public class Spirit : KinematicBody {
         endAnimator(delta);
         if(!moveBool) 
         moveInput();//Also preProcesses important variables for state.
+        jumpInput(delta);
         attack(delta);
+        phase(delta);
     }
     public void postProcessState(float delta) {
         //Mandatory logic post state, the state can manipulate how it happens though.
+        if(phaseVal < phasable && !GetNode<Phase>("Phase").isPhasing()
+            && !(GetCollisionLayerBit(0) || GetCollisionMaskBit(0))) {
+            SetCollisionLayerBit(0, true);
+            SetCollisionMaskBit(0, true);
+        }
         moveVel();
         velocity = MoveAndSlide(velocity, Vector3.Up); //Always moves but states like idle can manipulate it.
         rotate(delta);
@@ -102,6 +115,7 @@ public class Spirit : KinematicBody {
     public void endLoop() {//For restarting state.
         moveBool = false;
         inputDir = Vector3.Zero;
+        jumpBool = false;
     }
     public void endAnimator(float delta) {
         if(!sm.animator.IsPlaying() && sm.nextState == null && animBool == true) {
@@ -126,17 +140,17 @@ public class Spirit : KinematicBody {
         Basis camBasis = camera.GlobalTransform.basis;
         Vector3 fixedBasisX = new Vector3(camBasis.x.x, 0, camBasis.x.z).Normalized();
         Vector3 fixedBasisZ = new Vector3(camBasis.z.x, 0, camBasis.z.z).Normalized(); 
-        bool inputPressed = false;
-        if (Input.IsActionPressed(pad("move_forward"))) { inputPressed = true;
+        //bool inputPressed = false;
+        if (Input.IsActionPressed(pad("move_forward"))) { //inputPressed = true;
             inputDir -= fixedBasisZ * Input.GetActionStrength(pad("move_forward"));}
-        if (Input.IsActionPressed(pad("move_backward"))) { inputPressed = true;
+        if (Input.IsActionPressed(pad("move_backward"))) { //inputPressed = true;
             inputDir += fixedBasisZ * Input.GetActionStrength(pad("move_backward"));}
-        if (Input.IsActionPressed(pad("move_left"))) { inputPressed = true;
+        if (Input.IsActionPressed(pad("move_left"))) { //inputPressed = true;
             inputDir -= fixedBasisX * Input.GetActionStrength(pad("move_left"));}
-        if (Input.IsActionPressed(pad("move_right"))) { inputPressed = true;
+        if (Input.IsActionPressed(pad("move_right"))) { //inputPressed = true;
             inputDir += fixedBasisX * Input.GetActionStrength(pad("move_right"));}
         
-        if(!inputPressed) inputDir = Vector3.Zero;
+        //if(!inputPressed) inputDir = Vector3.Zero;
         if (inputDir.Length() > 1.0) {
             inputDir = inputDir.Normalized();
         }
@@ -148,6 +162,19 @@ public class Spirit : KinematicBody {
             events["InputDirection"].validate(this);
         } else {//velocity is false
             events["NoDirection"].validate(this);
+        }
+    }
+    public void jumpInput(float delta) {
+        if(sm.enforceUpdate) return;
+        if(Input.IsActionJustPressed(pad("jump")) && IsOnFloor()) jumpBool = true;
+        else jumpBool = false;
+        //if(Input.IsActionJustReleased(pad("jump"))) jumpBool = false;
+        //if(jumpBool) jumpSum = Mathf.Clamp(jumpSum + (jumpImpulse * delta), -gravity, 50f);
+
+        if(jumpBool) {
+            //events["Jump"].validate(this);
+        } else {
+            //events[NoJump].validate(this);
         }
     }
     public Vector3 chooseVel(VELOCITY choice = VELOCITY.CONTROL) {
@@ -170,9 +197,10 @@ public class Spirit : KinematicBody {
         if(speedDir.Length() > maxSpeed){
             speedDir = speedDir.Normalized() * maxSpeed;
         }
-        float newGravity = IsOnFloor() ? 0 : gravity;
-        velocity = new Vector3(speedDir.x, 
-        velocity.y + newGravity, speedDir.z);
+        float newGravity = IsOnFloor() ? 0 : gravity; //I should do jump states for whether you're
+        newGravity = phaseVal >= phasable ? 0 : gravity; //Phased or not.
+        velocity = new Vector3(speedDir.x, jumpBool ? jumpImpulse : 0 + //Why plus zero?
+        velocity.y + newGravity, speedDir.z); //I need to debug what's happening here better. inc w/ phase.
         //if(player == -1) GD.Print(velocity);
     }
     public void rotate(float delta) {
@@ -187,6 +215,39 @@ public class Spirit : KinematicBody {
         if(Input.IsActionJustPressed(pad("square"))) {
             //GD.Print("Button has been pressed!");
             events["AttackPressed"].validate(this);
+        }
+    }
+
+    public void phase(float delta) {
+        phaseInterval += delta;
+        if(Input.IsActionPressed(pad("phase"))) {
+            if(phaseBool == false) {
+                phaseBool = true;
+                phaseInterval = 0;
+            }
+            if(phaseInterval >= .20f) {
+                phaseVal += 10;
+                phaseInterval = 0;
+            }
+        } else {
+            if(phaseBool == true) {
+                phaseBool = false;
+                phaseInterval = 0;
+            }
+            if(phaseInterval >= .20f) {
+                phaseVal -= 10;
+                phaseInterval = 0;
+            }
+        }
+        if(phaseVal <= 0) {
+            phaseVal = 0;
+        } else if(phaseVal >= 100) {
+            phaseVal = 100;
+        }
+        GD.Print(phaseVal);
+        if(phaseVal >= phasable && (GetCollisionLayerBit(0) || GetCollisionMaskBit(0))) {
+            SetCollisionLayerBit(0, false);
+            SetCollisionMaskBit(0, false);
         }
     }
 }

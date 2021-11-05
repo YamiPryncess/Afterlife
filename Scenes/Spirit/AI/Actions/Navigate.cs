@@ -1,12 +1,10 @@
 using Godot;
-using System.Collections.Generic;
 public class Navigate : State {
     Navigation navMesh;
     Vector3 targetOrigin;
     Vector3 myOrigin;
     float navDelta = 0;
     float deltaLimit = .05f;//0.0825f;//.165f;
-    bool navigating = false;
     public Navigate(StateMachine _parent) : base(_parent) {
         name = STATE.NAVIGATE;
         navMesh = (Navigation)self.GetTree().GetNodesInGroup("Nav")[0];
@@ -24,20 +22,46 @@ public class Navigate : State {
         reality.path = navMesh.GetSimplePath(myOrigin, targetOrigin);
         reality.pathInx = 0;
         navDelta = 0;
-        navigating = true;
+    }
+    public bool pathExists() {
+        if(reality.path != null && reality.path.Length > 0) {
+            return true;
+        }
+        return false;
     }
     public bool reachedPoint() {
-        if(reality.path != null) {
+        if(pathExists()) {
             if(new Vector3(self.GlobalTransform.origin.x, 0, self.GlobalTransform.origin.z)
                 .DistanceTo(new Vector3(reality.path[reality.pathInx].x, 0, reality.path[reality.pathInx].z)) < 2) {
                     return true;
             }
         } return false;
     }
+    public Vector3 pointDir() {
+        if(pathExists()) {
+            return (reality.path[reality.pathInx] - self.GlobalTransform.origin).Normalized();
+        }
+        return Vector3.Zero;
+    }
+    public bool beforeFinal() {
+        if(pathExists()) {
+            if(reality.pathInx < reality.path.Length-1) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public bool finalPoint() {
+        if(pathExists()) {
+            if(reality.pathInx >= reality.path.Length-1) {
+                return true;
+            }
+        } 
+        return false;
+    }
     public bool targetMoved() {
         if(targetOrigin != null) {
-            if(targetOrigin.DistanceTo(reality.target.GlobalTransform.origin) > 1 & 
-                sufficeTime(navDelta, deltaLimit)) {
+            if(targetOrigin.DistanceTo(reality.target.GlobalTransform.origin) > 1) {
                 return true;        
             }
         }
@@ -54,13 +78,15 @@ public class Navigate : State {
                 bool reached = reachedPoint();
                 //1.Compare target's previous to current position if suffice time has pasted to limit refresh
                 //2.Check if self reached last path point or 3. Check if not navigating
-                if((!navigating) || targetMoved() || (reached & reality.pathInx >= reality.path.Length-1)) {
+                if(((!pathExists() || targetMoved()) & sufficeTime(navDelta, deltaLimit)) || 
+                    (reached & finalPoint())) {
                     refreshNav();//Refresh or start navmesh
                 }
-                if(reality.pathInx < reality.path.Length-1 && reachedPoint()) {//Reached point and still not at the end of the path array.
+                if(beforeFinal() && reachedPoint()) {//Reached point and still not at the end of the path array.
                         reality.pathInx++;
                 }
-                self.moveTurn((reality.path[reality.pathInx] - self.GlobalTransform.origin).Normalized());
+                //GD.Print(reality.path.Length, " ", reality.pathInx);
+                self.moveTurn(pointDir());
             }    
             navDelta = count(navDelta, deltaLimit);
         }

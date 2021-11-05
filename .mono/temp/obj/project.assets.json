@@ -56,11 +56,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "z:\\Projects\\Afterlife\\Afterlife.csproj",
+      "projectUniqueName": "Z:\\Projects\\Afterlife\\Afterlife.csproj",
       "projectName": "Afterlife",
-      "projectPath": "z:\\Projects\\Afterlife\\Afterlife.csproj",
+      "projectPath": "Z:\\Projects\\Afterlife\\Afterlife.csproj",
       "packagesPath": "C:\\Users\\zen86\\.nuget\\packages\\",
-      "outputPath": "z:\\Projects\\Afterlife\\.mono\\temp\\obj\\",
+      "outputPath": "Z:\\Projects\\Afterlife\\.mono\\temp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\zen86\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -75,6 +75,7 @@
       },
       "frameworks": {
         "net472": {
+          "targetAlias": "net472",
           "projectReferences": {}
         }
       },
@@ -86,13 +87,14 @@
     },
     "frameworks": {
       "net472": {
+        "targetAlias": "net472",
         "dependencies": {
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[11.0.2, )"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.401\\RuntimeIdentifierGraph.json"
       }
     }
   }
