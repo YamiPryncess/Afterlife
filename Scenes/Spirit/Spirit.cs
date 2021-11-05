@@ -31,6 +31,7 @@ public class Spirit : KinematicBody {
     public float phaseInterval = 0;
     public bool phaseBool = false;
     public int phasable = 50;
+    public float health = 100;
     public override void _Ready() {
         master = GetNode<Master>("/root/Master");
         sm = new StateMachine(this);
@@ -75,11 +76,10 @@ public class Spirit : KinematicBody {
         stats[index][2] += alteration;
         return getMax(index);
     }
-    // public override void _Process(float delta) {
-        
-    // }
     public override void _Process(float delta) {
         idleDelta = delta;
+        health = Mathf.Clamp(health, 0, 100);
+        if(health <= 0) { Visible = false; }
         if(isPlayer()) {
             preProcessState(delta);
             sm.process(delta);
@@ -216,6 +216,9 @@ public class Spirit : KinematicBody {
             //GD.Print("Button has been pressed!");
             events["AttackPressed"].validate(this);
         }
+    }
+    public void hurt() {
+        health = health - 10;
     }
 
     public void phase(float delta) {
