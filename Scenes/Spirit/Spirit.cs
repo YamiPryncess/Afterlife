@@ -27,7 +27,7 @@ public class Spirit : KinematicBody {
     public bool animBool {set; get;} = false;
     public bool moveBool {set; get;} = false;
     public bool jumpBool {set; get;} = false;
-    public int phaseVal = 0;
+    public float phaseVal = 0;
     public float phaseInterval = 0;
     public bool phaseBool = false;
     public int phasable = 50;
@@ -79,6 +79,7 @@ public class Spirit : KinematicBody {
     public override void _Process(float delta) {
         idleDelta = delta;
         health = Mathf.Clamp(health, 0, 100);
+        if(player == 1) GD.Print(health);
         if(health <= 0) { Visible = false; }
         if(isPlayer()) {
             preProcessState(delta);
@@ -218,9 +219,8 @@ public class Spirit : KinematicBody {
         }
     }
     public void hurt() {
-        health = health - 10;
+        health = health - (20 * (1-phaseVal));
     }
-
     public void phase(float delta) {
         phaseInterval += delta;
         if(Input.IsActionPressed(pad("phase"))) {
@@ -229,7 +229,7 @@ public class Spirit : KinematicBody {
                 phaseInterval = 0;
             }
             if(phaseInterval >= .20f) {
-                phaseVal += 10;
+                phaseVal += .10f;
                 phaseInterval = 0;
             }
         } else {
@@ -238,16 +238,15 @@ public class Spirit : KinematicBody {
                 phaseInterval = 0;
             }
             if(phaseInterval >= .20f) {
-                phaseVal -= 10;
+                phaseVal -= .10f;
                 phaseInterval = 0;
             }
         }
         if(phaseVal <= 0) {
             phaseVal = 0;
-        } else if(phaseVal >= 100) {
-            phaseVal = 100;
+        } else if(phaseVal >= 1) {
+            phaseVal = 1;
         }
-        GD.Print(phaseVal);
         if(phaseVal >= phasable && (GetCollisionLayerBit(0) || GetCollisionMaskBit(0))) {
             SetCollisionLayerBit(0, false);
             SetCollisionMaskBit(0, false);
