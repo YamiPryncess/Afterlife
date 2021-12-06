@@ -1,8 +1,8 @@
 using Godot;
 using System.Collections.Generic;
 
-public class Weapon : Area {
-    public bool attackBool {set; get;}
+public class Catalyst : Area {
+    public bool attackBool {set; get;} //Only works 1 animation to hit x amount of characters 1 time.
     public List<Node> hit = new List<Node>();
     public override void _Process(float delta) {
         if(!attackBool && hit.Count > 0) {

@@ -1,0 +1,92 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Scenes/Hud.cs" type="Script" id=1]
+
+[node name="Hud" type="VBoxContainer"]
+margin_right = 265.0
+margin_bottom = 83.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="."]
+margin_right = 265.0
+margin_bottom = 14.0
+text = "Player 1"
+align = 1
+
+[node name="Health" type="HBoxContainer" parent="."]
+margin_top = 18.0
+margin_right = 265.0
+margin_bottom = 43.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Name" type="Label" parent="Health"]
+margin_top = 5.0
+margin_right = 43.0
+margin_bottom = 19.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+text = "Health"
+align = 2
+
+[node name="Progress" type="ProgressBar" parent="Health"]
+margin_left = 47.0
+margin_right = 265.0
+margin_bottom = 25.0
+rect_min_size = Vector2( 0, 25 )
+size_flags_horizontal = 3
+value = 100.0
+
+[node name="Aura" type="HBoxContainer" parent="."]
+margin_top = 47.0
+margin_right = 265.0
+margin_bottom = 72.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Name" type="Label" parent="Aura"]
+margin_top = 5.0
+margin_right = 43.0
+margin_bottom = 19.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+text = "Aura"
+align = 2
+
+[node name="Progress" type="ProgressBar" parent="Aura"]
+margin_left = 47.0
+margin_right = 265.0
+margin_bottom = 25.0
+rect_min_size = Vector2( 0, 25 )
+size_flags_horizontal = 3
+value = 100.0
+
+[node name="Phase" type="HBoxContainer" parent="."]
+margin_top = 76.0
+margin_right = 265.0
+margin_bottom = 107.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Name" type="Label" parent="Phase"]
+margin_right = 43.0
+margin_bottom = 31.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+text = "Phase
+"
+align = 2
+
+[node name="Progress" type="ProgressBar" parent="Phase"]
+margin_left = 47.0
+margin_right = 265.0
+margin_bottom = 25.0
+rect_min_size = Vector2( 0, 25 )
+size_flags_horizontal = 3
+value = 100.0

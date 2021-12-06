@@ -1,8 +1,8 @@
 [gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Scenes/Spirit/Spirit.cs" type="Script" id=1]
-[ext_resource path="res://Scenes/Spirit/Phase.cs" type="Script" id=2]
-[ext_resource path="res://Scenes/Spirit/Weapon.cs" type="Script" id=3]
+[ext_resource path="res://Scenes/Spirit/Phaser.cs" type="Script" id=2]
+[ext_resource path="res://Scenes/Spirit/Catalyst.cs" type="Script" id=3]
 
 [sub_resource type="CapsuleShape" id=1]
 
@@ -58,7 +58,7 @@ tracks/0/keys = {
 } ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("Weapon:translation")
+tracks/1/path = NodePath("Catalyst:translation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -70,7 +70,7 @@ tracks/1/keys = {
 "values": [ Vector3( 1, 1, -2.25 ), Vector3( 1.414, 2.456, -0.016 ), Vector3( -1.144, -0.723, -2.462 ), Vector3( 1, 1, -2.25 ) ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("Weapon:rotation_degrees")
+tracks/2/path = NodePath("Catalyst:rotation_degrees")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
@@ -86,7 +86,7 @@ tracks/2/keys = {
 loop = true
 step = 0.0333333
 tracks/0/type = "value"
-tracks/0/path = NodePath("Weapon:translation")
+tracks/0/path = NodePath("Catalyst:translation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -98,7 +98,7 @@ tracks/0/keys = {
 "values": [ Vector3( 1, 1, -2.25 ), Vector3( 1, 1, -2.25 ) ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("Weapon:rotation_degrees")
+tracks/1/path = NodePath("Catalyst:rotation_degrees")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -137,26 +137,26 @@ skin = SubResource( 7 )
 skeleton = NodePath("../..")
 material/0 = null
 
-[node name="Phase" type="Area" parent="."]
+[node name="Phaser" type="Area" parent="."]
 script = ExtResource( 2 )
 
-[node name="CollisionShape" type="CollisionShape" parent="Phase"]
+[node name="CollisionShape" type="CollisionShape" parent="Phaser"]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
 shape = SubResource( 8 )
 
-[node name="Weapon" type="Area" parent="."]
+[node name="Catalyst" type="Area" parent="."]
 transform = Transform( 0.999214, 0.0303784, 0.0254905, 0, 0.642788, -0.766044, -0.0396562, 0.765442, 0.642282, 1.03764, 1.13236, -2.04691 )
 collision_layer = 0
 collision_mask = 8
 script = ExtResource( 3 )
 
-[node name="MeshInstance" type="MeshInstance" parent="Weapon"]
+[node name="MeshInstance" type="MeshInstance" parent="Catalyst"]
 transform = Transform( 0.392229, 0, 0, 0, 0.279504, 0, 0, 0, 0.974317, 0, 0, 0 )
 mesh = SubResource( 10 )
 skin = SubResource( 11 )
 material/0 = null
 
-[node name="CollisionShape" type="CollisionShape" parent="Weapon"]
+[node name="CollisionShape" type="CollisionShape" parent="Catalyst"]
 shape = SubResource( 12 )
 
 [node name="Animator" type="AnimationPlayer" parent="."]
@@ -166,4 +166,4 @@ anims/Attack_1 = SubResource( 13 )
 anims/Idle = SubResource( 14 )
 anims/Move = SubResource( 15 )
 
-[connection signal="body_entered" from="Weapon" to="Weapon" method="body_entered"]
+[connection signal="body_entered" from="Catalyst" to="Catalyst" method="body_entered"]

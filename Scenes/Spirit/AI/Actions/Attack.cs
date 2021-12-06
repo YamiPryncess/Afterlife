@@ -8,7 +8,7 @@ public class Attack : State {
     public override void Enter() {
         base.Enter();
         animator.Play("Attack_1");
-        self.GetNode<Weapon>("Weapon").attackBool = true;
+        self.GetNode<Catalyst>("Catalyst").attackBool = true;
         if(self.reality.target != null) 
             self.rotateDir = self.reality.target.GlobalTransform.origin - self.GlobalTransform.origin;
     }
@@ -17,7 +17,7 @@ public class Attack : State {
         succeed();//succeed for now but later requires callback.
     }
     public override void Exit() {
-        self.GetNode<Weapon>("Weapon").attackBool = false;
+        self.GetNode<Catalyst>("Catalyst").attackBool = false;
         base.Exit();
     }
 }

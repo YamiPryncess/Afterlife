@@ -8,6 +8,8 @@ public class Spirit : KinematicBody {
     //Status Aliments will be handled else where
     public StateMachine sm {set; get;}
     public Camera camera {set; get;}
+    public Hud hud {set; get;}
+    public Phaser phaser {set; get;}
     public float idleDelta {set; get;}
     public float gravity {set; get;} = -9.8f/3;
     public float speed {set; get;} = 12;
@@ -27,15 +29,14 @@ public class Spirit : KinematicBody {
     public bool animBool {set; get;} = false;
     public bool moveBool {set; get;} = false;
     public bool jumpBool {set; get;} = false;
-    public float phaseVal = 0;
-    public float phaseInterval = 0;
-    public bool phaseBool = false;
-    public int phasable = 50;
     public float health = 100;
     public override void _Ready() {
         master = GetNode<Master>("/root/Master");
         sm = new StateMachine(this);
         reality = new Reality();
+        phaser = GetNode<Phaser>("Phaser");
+        hud = (Hud)GetTree().GetNodesInGroup("Huds")[player > -1 ? player - 1 : 1];
+        GD.Print(player, hud);
         
         if(isPlayer()) {
             master.mechanics.Call("basics", this);
@@ -79,7 +80,6 @@ public class Spirit : KinematicBody {
     public override void _Process(float delta) {
         idleDelta = delta;
         health = Mathf.Clamp(health, 0, 100);
-        if(player == 1) GD.Print(health);
         if(health <= 0) { Visible = false; }
         if(isPlayer()) {
             preProcessState(delta);
@@ -99,15 +99,11 @@ public class Spirit : KinematicBody {
         moveInput();//Also preProcesses important variables for state.
         jumpInput(delta);
         attack(delta);
-        phase(delta);
+        phaser.phase(delta, this);
     }
     public void postProcessState(float delta) {
         //Mandatory logic post state, the state can manipulate how it happens though.
-        if(phaseVal < phasable && !GetNode<Phase>("Phase").isPhasing()
-            && !(GetCollisionLayerBit(0) || GetCollisionMaskBit(0))) {
-            SetCollisionLayerBit(0, true);
-            SetCollisionMaskBit(0, true);
-        }
+        phaser.solidify(this);
         moveVel();
         velocity = MoveAndSlide(velocity, Vector3.Up); //Always moves but states like idle can manipulate it.
         rotate(delta);
@@ -132,7 +128,7 @@ public class Spirit : KinematicBody {
     public void enforce_anim() {
         sm.enforceUpdate = true;
     }
-    public void moveTurn(Vector3 vector) {
+    public void updateDirection(Vector3 vector) {
         inputDir = vector;
         rotateDir = vector;
     }
@@ -199,7 +195,7 @@ public class Spirit : KinematicBody {
             speedDir = speedDir.Normalized() * maxSpeed;
         }
         float newGravity = IsOnFloor() ? 0 : gravity; //I should do jump states for whether you're
-        newGravity = phaseVal >= phasable ? 0 : gravity; //Phased or not.
+        newGravity = phaser.phaseVal >= phaser.phasable ? 0 : gravity; //Phased or not.
         velocity = new Vector3(speedDir.x, jumpBool ? jumpImpulse : 0 + //Why plus zero?
         velocity.y + newGravity, speedDir.z); //I need to debug what's happening here better. inc w/ phase.
         //if(player == -1) GD.Print(velocity);
@@ -219,38 +215,8 @@ public class Spirit : KinematicBody {
         }
     }
     public void hurt() {
-        health = health - (20 * (1-phaseVal));
-    }
-    public void phase(float delta) {
-        phaseInterval += delta;
-        if(Input.IsActionPressed(pad("phase"))) {
-            if(phaseBool == false) {
-                phaseBool = true;
-                phaseInterval = 0;
-            }
-            if(phaseInterval >= .20f) {
-                phaseVal += .10f;
-                phaseInterval = 0;
-            }
-        } else {
-            if(phaseBool == true) {
-                phaseBool = false;
-                phaseInterval = 0;
-            }
-            if(phaseInterval >= .20f) {
-                phaseVal -= .10f;
-                phaseInterval = 0;
-            }
-        }
-        if(phaseVal <= 0) {
-            phaseVal = 0;
-        } else if(phaseVal >= 1) {
-            phaseVal = 1;
-        }
-        if(phaseVal >= phasable && (GetCollisionLayerBit(0) || GetCollisionMaskBit(0))) {
-            SetCollisionLayerBit(0, false);
-            SetCollisionMaskBit(0, false);
-        }
+        health = health - (20 * (1-phaser.phaseVal));
+        hud.healthProgress.Value = health;
     }
 }
 public enum VELOCITY {
