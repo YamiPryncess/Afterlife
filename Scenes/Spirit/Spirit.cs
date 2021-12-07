@@ -36,7 +36,6 @@ public class Spirit : KinematicBody {
         reality = new Reality();
         phaser = GetNode<Phaser>("Phaser");
         hud = (Hud)GetTree().GetNodesInGroup("Huds")[player > -1 ? player - 1 : 1];
-        GD.Print(player, hud);
         
         if(isPlayer()) {
             master.mechanics.Call("basics", this);

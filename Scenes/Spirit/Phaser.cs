@@ -3,20 +3,33 @@ public class Phaser : Area {
     public float phaseVal {set; get;} = 0;
     private float phaseInterval = 0;
     public int phaseState  {set; get;}= 0;
+    private bool button = false;
     public int frame {set; get;} = 0;
     private int prevFrame = 0;
     [Export] public float phasable {set; get;} = .5f;
     [Export] public float peak {set; get;} = .8f;
-    [Export] public int threshold {set; get;} = 15;
-    [Export] public float incline {set; get;} = .20f;
-    [Export] public float decline {set; get;} = .025f; //Might want to change this based on threshold so they get their aura faster
-    [Export] public float cancelFrame {set; get;} = 45; //Or give the player a cancel option but they'd lose their aura which may not be good...
+    [Export] public float thresholdPeak {set; get;} = .5f;
+    [Export] public float startUp {set; get;} = 20;
+    [Export] public int threshold {set; get;} = 30;
+    [Export] public int maxFrames {set; get;} = 75; //Determined by how fast you can gather your aura?
+    [Export] public float sustainFactor {set; get;} = 1.2f;
+    private float incline {set; get;} = 1f;
+    private float decline = .025f; //Default, can be speed up by using an absorb ability.
+    private float heldIncline = .025f;
     public void phase(float delta, Spirit spirit) {
-        if(Input.IsActionJustPressed(spirit.pad("phase")) && phaseState == 0) {
-            phaseState = 1;
-            phaseInterval = 0;
-            frame = 0;
-            prevFrame = frame;
+        if(Input.IsActionJustPressed(spirit.pad("phase"))) {
+            if(phaseState == 0) {
+                phaseState = 1;
+                phaseInterval = 0;
+                frame = 0;
+                prevFrame = frame;
+                incline = 1f / startUp;
+                decline = 1f / (maxFrames - threshold);
+                heldIncline = decline / sustainFactor;
+            }
+            button = true;
+        } else if(Input.IsActionJustReleased(spirit.pad("phase"))) {
+            button = false;
         }
         if(phaseState > 0) {
             phaseInterval += delta;
@@ -29,15 +42,15 @@ public class Phaser : Area {
                 if(phaseState == 1) {
                     phaseVal += incline;
                     if(phaseVal >= peak) {
-                        phaseState = 2;
                         phaseVal = peak;
+                        if(frame >= threshold) phaseState = 2;
                     }   
-                } else if(phaseState == 2) {
-                    phaseVal = peak;
-                    if(frame >= threshold) phaseState = 3;
-                } else if(phaseState == 3) { 
+                } else if(phaseState == 2) { 
                     phaseVal -= decline;
-                    if(phaseVal <= 0) { phaseState = 0; }    
+                    if(phaseVal <= 0) { phaseState = 0; }
+                    else if(button && phaseVal <= thresholdPeak) {
+                        phaseVal += heldIncline;
+                    }
                 }
             }
         }
