@@ -6,16 +6,18 @@ public class Phaser : Area {
     private bool button = false;
     public int frame {set; get;} = 0;
     private int prevFrame = 0;
-    [Export] public float phasable {set; get;} = .5f;
+    [Export] public float phasable {set; get;} = .2f;
     [Export] public float peak {set; get;} = .8f;
-    [Export] public float thresholdPeak {set; get;} = .5f;
-    [Export] public float startUp {set; get;} = 20;
-    [Export] public int threshold {set; get;} = 30;
-    [Export] public int maxFrames {set; get;} = 75; //Determined by how fast you can gather your aura?
+    [Export] public float sustainPeak {set; get;} = .6f;
+    [Export] public float sustainLength = .4f;
     [Export] public float sustainFactor {set; get;} = 1.2f;
+    [Export] public float startFrames {set; get;} = 20;
+    [Export] public int activeFrames {set; get;} = 30;
+    [Export] public int endFrames {set; get;} = 75; //Determined by how fast you can gather your aura?
     private float incline {set; get;} = 1f;
     private float decline = .025f; //Default, can be speed up by using an absorb ability.
-    private float heldIncline = .025f;
+    private float sustainIncline = .025f;
+    private float sustainDropOff {set; get;} = 15;
     public void phase(float delta, Spirit spirit) {
         if(Input.IsActionJustPressed(spirit.pad("phase"))) {
             if(phaseState == 0) {
@@ -23,9 +25,10 @@ public class Phaser : Area {
                 phaseInterval = 0;
                 frame = 0;
                 prevFrame = frame;
-                incline = 1f / startUp;
-                decline = 1f / (maxFrames - threshold);
-                heldIncline = decline / sustainFactor;
+                incline = peak / startFrames;
+                decline = peak / (endFrames - activeFrames);
+                sustainIncline = decline / sustainFactor;
+                sustainDropOff = sustainPeak - sustainLength;
             }
             button = true;
         } else if(Input.IsActionJustReleased(spirit.pad("phase"))) {
@@ -43,13 +46,13 @@ public class Phaser : Area {
                     phaseVal += incline;
                     if(phaseVal >= peak) {
                         phaseVal = peak;
-                        if(frame >= threshold) phaseState = 2;
+                        if(frame >= activeFrames) phaseState = 2;
                     }   
                 } else if(phaseState == 2) { 
                     phaseVal -= decline;
                     if(phaseVal <= 0) { phaseState = 0; }
-                    else if(button && phaseVal <= thresholdPeak) {
-                        phaseVal += heldIncline;
+                    else if(button && phaseVal <= sustainPeak && phaseVal >= sustainDropOff) {
+                        phaseVal += sustainIncline;
                     }
                 }
             }
@@ -81,6 +84,8 @@ public class Phaser : Area {
 }
 
 //Old Code
+//Math that doesn't work... I realized you can just subtract the sustainpeak by the sustainLength to figure out the drop off
+                //sustainDropOff = ((-sustainPeak / ((sustainIncline-decline))) - (sustainLength * 30))/30;
 //Physics process based start up i frames
             // if(frame >= 0 && frame <= 2) phaseVal = 0;
             // else if(frame > 2 && frame <= 12) phaseVal = .95f;
