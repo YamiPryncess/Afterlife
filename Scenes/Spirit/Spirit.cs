@@ -89,8 +89,13 @@ public class Spirit : KinematicBody {
         }
     }
     public override void _PhysicsProcess(float delta) {
-        //if(player == 1) GD.Print(sm.currentState.name, " ", velocity); 
+        //if(player == 1) GD.Print(sm.currentState.name, " ", velocity);
         postProcessState(delta);
+    }
+    public void frameSignal() {//Game is idle process delta based so I don't need this unless as an option.
+        if(phaser.phaseState > 0) {
+            phaser.frame++;
+        }
     }
     public void preProcessState(float delta) {
         //Handles Event Observer pattern changes state before state processes
