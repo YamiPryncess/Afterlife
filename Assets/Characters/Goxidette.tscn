@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Models/Goxidette.glb" type="PackedScene" id=1]
+
+[sub_resource type="AnimationNodeAnimation" id=1]
+animation = "running-loop"
+
+[sub_resource type="AnimationNodeBlendTree" id=2]
+graph_offset = Vector2( -272, 51 )
+nodes/Animation/node = SubResource( 1 )
+nodes/Animation/position = Vector2( 20, 120 )
+node_connections = [ "output", 0, "Animation" ]
+
+[node name="Goxidette" instance=ExtResource( 1 )]
+transform = Transform( 50, 0, 0, 0, -2.18557e-06, 50, 0, -50, -2.18557e-06, 0, 0, 0 )
+
+[node name="RootMotionView" type="RootMotionView" parent="." index="3"]
+transform = Transform( 0.02, 0, 0, 0, -8.74228e-10, -0.02, 0, 0.02, -8.74228e-10, 0, 0, 0 )
+animation_path = NodePath("../AnimationTree")
+
+[node name="AnimationTree" type="AnimationTree" parent="." index="5"]
+tree_root = SubResource( 2 )
+anim_player = NodePath("../AnimationPlayer")
+active = true
+root_motion_track = NodePath("Armature/Skeleton:Hips")

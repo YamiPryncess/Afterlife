@@ -1,6 +1,5 @@
 using Godot;
 public class Phaser : Area {
-    public float phaseVal {set; get;} = 0;
     private float phaseInterval = 0;
     public int phaseState  {set; get;}= 0;
     private bool button = false;
@@ -10,14 +9,23 @@ public class Phaser : Area {
     [Export] public float peak {set; get;} = .8f;
     [Export] public float sustainPeak {set; get;} = .6f;
     [Export] public float sustainLength = .4f;
-    [Export] public float sustainFactor {set; get;} = 1.2f;
-    [Export] public float startFrames {set; get;} = 20;
+    [Export] public float sustainFactor {set; get;} = 1.25f; //1 * Decline + Some Counter Incline Value
+    [Export] public int startFrames {set; get;} = 20;
     [Export] public int activeFrames {set; get;} = 30;
     [Export] public int endFrames {set; get;} = 75; //Determined by how fast you can gather your aura?
     private float incline {set; get;} = 1f;
     private float decline = .025f; //Default, can be speed up by using an absorb ability.
     private float sustainIncline = .025f;
     private float sustainDropOff {set; get;} = 15;
+    //Constants! Starting points for stat manipulation.
+    public const int baseStart = 10;
+    public const int baseActive = 5;
+    public const int baseEnd = 45;
+    public const float basePeak = .50f;
+    public const float baseSusPeak = .25f;
+    public const float baseSFactor = 3; //Smaller means decline slows down one. 1 means decline doesn't move at all.
+    public const float baseSLength = .5f;
+
     public void phase(float delta, Spirit spirit) {
         if(Input.IsActionJustPressed(spirit.pad("phase"))) {
             if(phaseState == 0) {
@@ -36,36 +44,36 @@ public class Phaser : Area {
         }
         if(phaseState > 0) {
             phaseInterval += delta;
-            if(phaseInterval >= .033f) {
+            if(phaseInterval >= .033333f) {
                 frame++;
                 phaseInterval = 0;
             }
             if(frame > prevFrame) {
                 prevFrame = frame;
                 if(phaseState == 1) {
-                    phaseVal += incline;
-                    if(phaseVal >= peak) {
-                        phaseVal = peak;
+                    spirit.stats.modify(STATS.PHASE, incline);
+                    if(spirit.stats.phasePoints >= peak) {
+                        spirit.stats.phasePoints = peak;
                         if(frame >= activeFrames) phaseState = 2;
                     }   
                 } else if(phaseState == 2) { 
-                    phaseVal -= decline;
-                    if(phaseVal <= 0) { phaseState = 0; }
-                    else if(button && phaseVal <= sustainPeak && phaseVal >= sustainDropOff) {
-                        phaseVal += sustainIncline;
+                    spirit.stats.modify(STATS.PHASE, -decline);
+                    if(spirit.stats.phasePoints <= 0) { phaseState = 0; }
+                    else if(button && spirit.stats.phasePoints <= sustainPeak && spirit.stats.phasePoints >= sustainDropOff) {
+                        spirit.stats.modify(STATS.PHASE, sustainIncline);
                     }
                 }
             }
+            //GD.Print(phaseVal, " ", frame);
         }
-        phaseVal = Mathf.Clamp(phaseVal, 0, 1);
-        if(phaseVal >= phasable && (spirit.GetCollisionLayerBit(0) || spirit.GetCollisionMaskBit(0))) {
+        if(spirit.stats.phasePoints >= phasable && (spirit.GetCollisionLayerBit(0) || spirit.GetCollisionMaskBit(0))) {
             spirit.SetCollisionLayerBit(0, false);
             spirit.SetCollisionMaskBit(0, false);
         }
-        spirit.hud.phaseProgress.Value = phaseVal * 100;
+        spirit.hud.phaseProgress.Value = spirit.stats.phasePoints * 100;
     }
     public void solidify(Spirit spirit) {
-        if(phaseVal < phasable && !isOverlapping()
+        if(spirit.stats.phasePoints < phasable && !isOverlapping()
             && !(spirit.GetCollisionLayerBit(0) || spirit.GetCollisionMaskBit(0))) {
             spirit.SetCollisionLayerBit(0, true);
             spirit.SetCollisionMaskBit(0, true);
@@ -80,6 +88,12 @@ public class Phaser : Area {
             }
         }
         return result;
+    }
+    public void determine(Stats stats) {
+        startFrames = baseStart - (stats.spirit + 3*stats.grace)/4;
+        activeFrames = baseStart + baseActive + (stats.spirit + 3*stats.grace)/4;
+        endFrames =  baseStart + baseActive + baseEnd - (int)((stats.spirit + 2*stats.might)/3);
+        //peak = basePeak + 
     }
 }
 

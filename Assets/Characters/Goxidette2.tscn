@@ -1,0 +1,58 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Models/Goxidette2.glb" type="PackedScene" id=1]
+
+[sub_resource type="AnimationNodeAnimation" id=1]
+animation = "RightTurn"
+
+[sub_resource type="AnimationNodeAnimation" id=2]
+animation = "LeftTurn"
+
+[sub_resource type="AnimationNodeAnimation" id=3]
+animation = "Punching"
+
+[sub_resource type="AnimationNodeAnimation" id=4]
+animation = "Jump"
+
+[sub_resource type="AnimationNodeAnimation" id=5]
+animation = "Walking"
+
+[sub_resource type="AnimationNodeBlend3" id=6]
+
+[sub_resource type="AnimationNodeBlend3" id=7]
+
+[sub_resource type="AnimationNodeBlendTree" id=8]
+graph_offset = Vector2( 0, -177.5 )
+nodes/Animation/node = SubResource( 5 )
+nodes/Animation/position = Vector2( 180, 120 )
+"nodes/Animation 2/node" = SubResource( 1 )
+"nodes/Animation 2/position" = Vector2( 240, -40 )
+"nodes/Animation 3/node" = SubResource( 2 )
+"nodes/Animation 3/position" = Vector2( 258, 283 )
+"nodes/Animation 4/node" = SubResource( 3 )
+"nodes/Animation 4/position" = Vector2( 580, 240 )
+"nodes/Animation 5/node" = SubResource( 4 )
+"nodes/Animation 5/position" = Vector2( 460, -120 )
+nodes/Blend3/node = SubResource( 7 )
+nodes/Blend3/position = Vector2( 520, 0 )
+"nodes/Blend3 2/node" = SubResource( 6 )
+"nodes/Blend3 2/position" = Vector2( 828, 26.5 )
+nodes/output/position = Vector2( 1040, 80 )
+node_connections = [ "output", 0, "Blend3 2", "Blend3", 0, "Animation 2", "Blend3", 1, "Animation", "Blend3", 2, "Animation 3", "Blend3 2", 0, "Animation 5", "Blend3 2", 1, "Blend3", "Blend3 2", 2, "Animation 4" ]
+
+[node name="Goxidette2" instance=ExtResource( 1 )]
+transform = Transform( 100, 0, 0, 0, -4.37114e-06, 100, 0, -100, -4.37114e-06, 0, 0, 0 )
+
+[node name="AnimationPlayer" parent="." index="3"]
+autoplay = "Walking"
+
+[node name="AnimationTree" type="AnimationTree" parent="." index="4"]
+tree_root = SubResource( 8 )
+anim_player = NodePath("../AnimationPlayer")
+active = true
+root_motion_track = NodePath("Armature/Skeleton:RootMotion")
+parameters/Blend3/blend_amount = 0.05
+"parameters/Blend3 2/blend_amount" = -0.05
+
+[node name="RootMotionView" type="RootMotionView" parent="AnimationTree" index="0"]
+animation_path = NodePath("..")

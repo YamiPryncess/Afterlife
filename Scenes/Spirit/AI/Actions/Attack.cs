@@ -10,7 +10,7 @@ public class Attack : State {
         animator.Play("Attack_1");
         self.GetNode<Catalyst>("Catalyst").attackBool = true;
         if(self.reality.target != null) 
-            self.rotateDir = self.reality.target.GlobalTransform.origin - self.GlobalTransform.origin;
+            self.move.rotateDir = self.reality.target.GlobalTransform.origin - self.GlobalTransform.origin;
     }
     public override void Update() {
         base.Update();

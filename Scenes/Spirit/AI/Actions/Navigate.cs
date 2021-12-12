@@ -86,7 +86,7 @@ public class Navigate : State {
                         reality.pathInx++;
                 }
                 //GD.Print(reality.path.Length, " ", reality.pathInx);
-                self.updateDirection(pointDir());
+                self.move.updateDirection(pointDir());
             }    
             navDelta = count(navDelta, deltaLimit);
         }

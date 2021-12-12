@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Assets/Characters/Goxidette2.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scenes/Spirit/Spirit.tscn" type="PackedScene" id=2]
+
+[node name="Spirette" instance=ExtResource( 2 )]
+player = -2
+
+[node name="Goxidette2" parent="." index="0" instance=ExtResource( 1 )]
+transform = Transform( 100, 0, 0, 0, -4.37114e-06, 100, 0, -100, -4.37114e-06, 0, -1.5, 0 )
+
+[node name="MeshInstance" parent="." index="3"]
+visible = false
+
+[node name="MeshInstance" parent="MeshInstance" index="0"]
+visible = false
+
+[node name="Catalyst" parent="." index="5"]
+visible = false
+
+[node name="MeshInstance" parent="Catalyst" index="0"]
+visible = false
+
+[node name="CollisionShape" parent="Catalyst" index="1"]
+visible = false
