@@ -156,6 +156,7 @@ glow_bloom = 1.0
 
 [node name="Player2" parent="World/Characters" instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.15632, 1.32961, 5.87161 )
+player = -2
 
 [node name="Meeting" type="Spatial" parent="World/Characters"]
 script = ExtResource( 2 )

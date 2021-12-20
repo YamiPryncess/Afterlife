@@ -10,12 +10,12 @@ public class Event {
     //So one group of events may interupt while another may queue
     //A state to the next action. Then maybe the state can check
     //for itself if it wants to allow that type of event & process it.
-    public string name {set; get;} = "";
+    public MECHEVENT name {set; get;} = MECHEVENT.NONE;
     public EVENTTYPE eventType {set; get;}
     public Dictionary<STATE, STATE> condition {set; get;} = 
     new Dictionary<STATE, STATE>(); //Only accessed by mechanics, nothing else.
-    public Event(string _name, Dictionary<STATE, STATE> _condition) {
-        name = _name;
+    public Event(MECHEVENT _mechEvent, Dictionary<STATE, STATE> _condition) {
+        name = _mechEvent;
         condition = _condition;
     }
     public void addCondition(STATE curCondition, STATE nextTransition) {
@@ -26,9 +26,9 @@ public class Event {
         STATE curStateEnum = sm.currentState.name;
         if(condition.ContainsKey(curStateEnum)
             && condition[curStateEnum] != STATE.NULL) { //If transitioning to same state, NULL stops it.
-            State nextState = sm.enumToState(condition[curStateEnum]);
-            if(nextState != null) {
-                sm.setNextState(nextState);
+            State newState = sm.enumToState(condition[curStateEnum]);
+            if(newState != null) {
+                sm.setNextState(newState);
             }//In the future states may also have subordinate states.
         }//Attack for example may have move and jump as subordinates in its class.
     }//They can do side processes and be called by validate() too.

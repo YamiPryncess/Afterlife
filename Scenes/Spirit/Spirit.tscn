@@ -39,7 +39,7 @@ height = 2.0
 
 [sub_resource type="Animation" id=13]
 length = 0.4
-step = 0.0166667
+step = 0.0333333
 tracks/0/type = "method"
 tracks/0/path = NodePath(".")
 tracks/0/interp = 1
@@ -64,7 +64,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( -0.017, 0.17, 0.272, 0.400001 ),
+"times": PoolRealArray( 0, 0.17, 0.272, 0.400001 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
 "values": [ Vector3( 1, 1, -2.25 ), Vector3( 1.414, 2.456, -0.016 ), Vector3( -1.144, -0.723, -2.462 ), Vector3( 1, 1, -2.25 ) ]
@@ -76,7 +76,7 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( -0.017, 0.17, 0.272, 0.400001 ),
+"times": PoolRealArray( 0, 0.17, 0.272, 0.400001 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
 "values": [ Vector3( 45, 0, 0 ), Vector3( 100, 25, 0 ), Vector3( -17.018, 39.423, -74.161 ), Vector3( 45, 0, 0 ) ]
@@ -146,7 +146,7 @@ transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0
 shape = SubResource( 8 )
 
 [node name="Catalyst" type="Area" parent="."]
-transform = Transform( 0.999214, 0.0303784, 0.0254905, 0, 0.642788, -0.766044, -0.0396562, 0.765442, 0.642282, 1.03764, 1.13236, -2.04691 )
+transform = Transform( 1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 1, 1, -2.25 )
 collision_layer = 0
 collision_mask = 8
 script = ExtResource( 3 )

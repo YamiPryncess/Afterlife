@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class Jump : State {
     public Jump(StateMachine _parent) : base(_parent) {
-        name = STATE.MOVE;
+        name = STATE.JUMP;
     }
     public override void Enter() {
         base.Enter();

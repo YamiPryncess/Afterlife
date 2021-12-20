@@ -11,12 +11,13 @@ public class Spirit : KinematicBody {
     public float idleDelta {set; get;}
     public Movement move {set; get;}
     [Export] public int player {set; get;} = -1;
-    public Dictionary<string, Event> events {set; get;} = 
-        new Dictionary<string, Event>();
+    public Dictionary<MECHEVENT, Event> events {set; get;} = 
+        new Dictionary<MECHEVENT, Event>();
     public BTree bTree {set; get;}
     public Reality reality {set; get;}
     public Dictionary<BELIEF, bool> beliefs {set; get;} = new Dictionary<BELIEF, bool>();
     public bool animBool {set; get;} = false;
+    public bool stanceBool {set; get;} = false;
     public override void _Ready() {
         master = GetNode<Master>("/root/Master");
         sm = new StateMachine(this);
@@ -48,15 +49,15 @@ public class Spirit : KinematicBody {
         idleDelta = delta;
         if(stats.lifePoints <= 0) { Visible = false; }
         if(isPlayer()) {
-            preProcessState(delta);
-            sm.process(delta);
+            preProcessState(delta);//Mutates controller variables like inputDir, also calls state change events
+            sm.process(delta);//Mutates state variables like speedDir & rotateDir (may use velocity to change them)
         } else if(bTree != null) {
             bTree.process();
         }
     }
     public override void _PhysicsProcess(float delta) {
         //if(player == 1) GD.Print(sm.currentState.name, " ", velocity);
-        postProcessState(delta);
+        postProcessState(delta); //Mutates physics variables like Velocity, then resets controller and input variables
     }
     public void frameSignal() {//Game is idle process delta based so I don't need this unless as an option.
         if(phaser.phaseState > 0) {
@@ -66,7 +67,7 @@ public class Spirit : KinematicBody {
     public void preProcessState(float delta) {
         //Handles Event Observer pattern changes state before state processes
         endAnimator(delta);
-        if(!move.moveBool) 
+        //if(!move.moveBool) 
         move.moveInput();//Also preProcesses important variables for state.
         move.jumpInput(delta);
         attack(delta);
@@ -75,7 +76,7 @@ public class Spirit : KinematicBody {
     public void postProcessState(float delta) {
         //Mandatory logic post state, the state can manipulate how it happens though.
         phaser.solidify(this);
-        move.moveVel();
+        move.updateVel();
         move.velocity = MoveAndSlide(move.velocity, Vector3.Up); //Always moves but states like idle can manipulate it.
         move.rotate(delta);
         endLoop();
@@ -83,11 +84,12 @@ public class Spirit : KinematicBody {
     public void endLoop() {//For restarting state.
         move.moveBool = false;
         move.inputDir = Vector3.Zero;
+        move.speedDir = Vector3.Zero;
         move.jumpBool = false;
     }
     public void endAnimator(float delta) {
         if(!sm.animator.IsPlaying() && sm.nextState == null && animBool == true) {
-            events["AnimEnd"].validate(this);
+            events[MECHEVENT.ANIMEND].validate(this);
             animBool = false;
         } else {
             animBool = true;
@@ -100,9 +102,9 @@ public class Spirit : KinematicBody {
         sm.enforceUpdate = true;
     }
     public void attack(float delta) {
-        if(Input.IsActionJustPressed(pad("square"))) {
+        if(Input.IsActionJustPressed(pad("attack"))) {
             //GD.Print("Button has been pressed!");
-            events["AttackPressed"].validate(this);
+            events[MECHEVENT.ATTPRESS].validate(this);
         }
     }
     public void hurt() {

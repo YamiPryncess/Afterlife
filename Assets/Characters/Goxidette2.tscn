@@ -22,7 +22,7 @@ animation = "Walking"
 [sub_resource type="AnimationNodeBlend3" id=7]
 
 [sub_resource type="AnimationNodeBlendTree" id=8]
-graph_offset = Vector2( 0, -177.5 )
+graph_offset = Vector2( 87, -169.606 )
 nodes/Animation/node = SubResource( 5 )
 nodes/Animation/position = Vector2( 180, 120 )
 "nodes/Animation 2/node" = SubResource( 1 )
@@ -34,7 +34,7 @@ nodes/Animation/position = Vector2( 180, 120 )
 "nodes/Animation 5/node" = SubResource( 4 )
 "nodes/Animation 5/position" = Vector2( 460, -120 )
 nodes/Blend3/node = SubResource( 7 )
-nodes/Blend3/position = Vector2( 520, 0 )
+nodes/Blend3/position = Vector2( 500, 20 )
 "nodes/Blend3 2/node" = SubResource( 6 )
 "nodes/Blend3 2/position" = Vector2( 828, 26.5 )
 nodes/output/position = Vector2( 1040, 80 )
@@ -51,8 +51,8 @@ tree_root = SubResource( 8 )
 anim_player = NodePath("../AnimationPlayer")
 active = true
 root_motion_track = NodePath("Armature/Skeleton:RootMotion")
-parameters/Blend3/blend_amount = 0.05
-"parameters/Blend3 2/blend_amount" = -0.05
+parameters/Blend3/blend_amount = 0.0
+"parameters/Blend3 2/blend_amount" = 0.0
 
 [node name="RootMotionView" type="RootMotionView" parent="AnimationTree" index="0"]
 animation_path = NodePath("..")

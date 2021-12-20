@@ -27,7 +27,7 @@ public class Phaser : Area {
     public const float baseSLength = .5f;
 
     public void phase(float delta, Spirit spirit) {
-        if(Input.IsActionJustPressed(spirit.pad("phase"))) {
+        if(Input.IsActionJustPressed(spirit.pad("focus"))) {
             if(phaseState == 0) {
                 phaseState = 1;
                 phaseInterval = 0;
@@ -39,7 +39,7 @@ public class Phaser : Area {
                 sustainDropOff = sustainPeak - sustainLength;
             }
             button = true;
-        } else if(Input.IsActionJustReleased(spirit.pad("phase"))) {
+        } else if(Input.IsActionJustReleased(spirit.pad("focus"))) {
             button = false;
         }
         if(phaseState > 0) {

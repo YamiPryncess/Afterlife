@@ -3,14 +3,18 @@ using Godot;
 public class Movement {
     private Spirit self;
     public float gravity {set; get;} = -9.8f/3;
-    public float speed {set; get;} = 12;
     public float jumpImpulse {set; get;} = 50;
+    public float yVelocity {set; get;} = 0;
+    public float speed {set; get;} = 12;
+    public float maxStrafe {set; get;} = 8;
     public float maxSpeed {set; get;} = 16;
     public bool moveBool {set; get;} = false;
     public bool jumpBool {set; get;} = false;
+    public bool stanceBool {set; get;} = false;
     public Vector3 velocity {set; get;} = new Vector3();
     public Vector3 inputDir {set; get;} = new Vector3();
     //public float jumpSum {set; get;}
+    public Vector3 speedDir {set; get;} = new Vector3();
     public Vector3 rotateDir {set; get;} = new Vector3();
     //public bool autoInput {set; get;} = false;
 
@@ -22,33 +26,35 @@ public class Movement {
         inputDir = vector;
         rotateDir = vector;
     }
+    public void stanceInput() {
+        stanceBool = Input.IsActionPressed(self.pad("stance"));
+    }
     public void moveInput() {
         inputDir = new Vector3();
         Basis camBasis = self.camera.GlobalTransform.basis;
         Vector3 fixedBasisX = new Vector3(camBasis.x.x, 0, camBasis.x.z).Normalized();
         Vector3 fixedBasisZ = new Vector3(camBasis.z.x, 0, camBasis.z.z).Normalized(); 
         //bool inputPressed = false;
-        if (Input.IsActionPressed(self.pad("move_forward"))) { //inputPressed = true;
-            inputDir -= fixedBasisZ * Input.GetActionStrength(self.pad("move_forward"));}
-        if (Input.IsActionPressed(self.pad("move_backward"))) { //inputPressed = true;
-            inputDir += fixedBasisZ * Input.GetActionStrength(self.pad("move_backward"));}
-        if (Input.IsActionPressed(self.pad("move_left"))) { //inputPressed = true;
-            inputDir -= fixedBasisX * Input.GetActionStrength(self.pad("move_left"));}
-        if (Input.IsActionPressed(self.pad("move_right"))) { //inputPressed = true;
-            inputDir += fixedBasisX * Input.GetActionStrength(self.pad("move_right"));}
-        
+        if (Input.IsActionPressed(self.pad("moveUp"))) { //inputPressed = true;
+            inputDir -= fixedBasisZ * Input.GetActionStrength(self.pad("moveUp"));}
+        if (Input.IsActionPressed(self.pad("moveDown"))) { //inputPressed = true;
+            inputDir += fixedBasisZ * Input.GetActionStrength(self.pad("moveDown"));}
+        if (Input.IsActionPressed(self.pad("moveLeft"))) { //inputPressed = true;
+            inputDir -= fixedBasisX * Input.GetActionStrength(self.pad("moveLeft"));}
+        if (Input.IsActionPressed(self.pad("moveRight"))) { //inputPressed = true;
+            inputDir += fixedBasisX * Input.GetActionStrength(self.pad("moveRight"));}
+ 
         //if(!inputPressed) inputDir = Vector3.Zero;
         if (inputDir.Length() > 1.0) {
             inputDir = inputDir.Normalized();
         }
-        rotateDir = inputDir;
 
         moveBool = true;
         if(self.sm.enforceUpdate) return;
         if(inputDir != Vector3.Zero ) {//velocity is true
-            self.events["InputDirection"].validate(self);
+            self.events[MECHEVENT.INPUTDIR].validate(self);
         } else {//velocity is false
-            self.events["NoDirection"].validate(self);
+            self.events[MECHEVENT.NODIR].validate(self);
         }
     }
     public void jumpInput(float delta) {
@@ -79,15 +85,8 @@ public class Movement {
         }
         return Vector3.Zero;
     }
-    public void moveVel() {
-        Vector3 speedDir = chooseVel(VELOCITY.CONTROL);
-        if(speedDir.Length() > maxSpeed){
-            speedDir = speedDir.Normalized() * maxSpeed;
-        }
-        float newGravity = self.IsOnFloor() ? 0 : gravity; //I should do jump states for whether you're
-        newGravity = self.stats.phasePoints >= self.phaser.phasable ? 0 : gravity; //Phased or not.
-        velocity = new Vector3(speedDir.x, jumpBool ? jumpImpulse : 0 + //Why plus zero?
-        velocity.y + newGravity, speedDir.z); //I need to debug what's happening here better. inc w/ phase.
+    public void updateVel() { //Only place velocity should be updated from since it's called from physics process when final calculations are set.
+        velocity = new Vector3(speedDir.x, yVelocity, speedDir.z); //I need to debug what's happening here better. inc w/ phase.
         //if(player == -1) GD.Print(velocity);
     }
     public void rotate(float delta) {

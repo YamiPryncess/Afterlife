@@ -9,19 +9,49 @@ public class StateMachine {
     public AnimationPlayer animator {set; get;}
     public bool finalFrame {set; get;} = false;
     public bool enforceUpdate {set; get;} = false;
+    public Dictionary<STATE, int> priority {set; get;} //strictly for input priority
     public StateMachine(Spirit _self) {
         self = _self;
         animator = self.GetNode<AnimationPlayer>("Animator");
         currentState = new Idle(this);
+
+        priority = new Dictionary<STATE, int>();
+        priority.Add(STATE.IDLE, 0);
+
+        priority.Add(STATE.WALK, 1);
+        priority.Add(STATE.RUN, 1);
+
+        priority.Add(STATE.ATTACK, 2);
+        priority.Add(STATE.DASH, 2);
+        priority.Add(STATE.JUMP, 2);
     }
-    public void setNextState(State _nextState) {
-        if(!enforceUpdate) currentState.stage = STAGE.EXIT;
-        nextState = _nextState;
+    /*setNextState(State newState) 
+    Constantly Called- Called multiple times in one idle process. The most recent prioric input when state finally accepts a change is what matters.
+    State Changing- State may or may not (if prevented by enforceUpdate) change for multiple idle processes. 
+    Priority- Some inputs will take priority over others. So if an early input has priority over later inputs, all later inputs will be denied.
+    Enforce Update- Is set by animationPlayer atm & denies exit into a new state thus allowing for a loose buffer period for new incoming States.
+    nextState- newStates will be buffered in the "nextState" var regardless of whether the "currentState.stage" exits or not.*/
+    public void setNextState(State newState) { 
+        if(nextState == null || isPrioric(newState, nextState)) {
+            if(!enforceUpdate) currentState.stage = STAGE.EXIT; 
+            nextState = newState;                             
+        }
+    }
+    /*isPrioric()
+    Made especially so if a delicate input like a 2 button input,
+    for example Stance + Attack is buffered to cause a special attack
+    Then Stance is let go of before buffering ends and attack is still held.
+    The Stance + Attack special attack can take priority over the Lone Attack.*/
+    public bool isPrioric(State newState, State nextState) {
+        if(priority[newState.name] > priority[nextState.name]) {
+            return true;                                       
+        }
+        return false;
     }
     public State enumToState(STATE newState) {
         switch (newState){
-            case STATE.MOVE:
-                return new Move(this);
+            case STATE.WALK:
+                return new Walk(this);
             case STATE.IDLE:
                 return new Idle(this);
             case STATE.ATTACK:
@@ -62,5 +92,5 @@ public class StateMachine {
     public void cancel() { finalFrame = true; animator.Stop(true); }
 }
 public enum STATE {
-    IDLE, MOVE, RUN, ATTACK, JUMP, FALL, NAVIGATE, NULL
+    IDLE, WALK, DASH, RUN, ATTACK, JUMP, FALL, NAVIGATE, NULL
 }

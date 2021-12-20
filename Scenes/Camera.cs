@@ -16,10 +16,10 @@ public class Camera : Godot.Camera {
         meeting = GetParent<Meeting>();
     }
     public override void _Process(float delta) {
-        if (Input.IsActionPressed("camera_up")) verticalOrbit -= 1f * delta;
-        if (Input.IsActionPressed("camera_down")) verticalOrbit += 1f * delta;
-        if (Input.IsActionPressed("camera_left")) curRotation -= 1f * delta;
-        if (Input.IsActionPressed("camera_right")) curRotation += 1f * delta;
+        if (Input.IsActionPressed("camUp_1")) verticalOrbit -= 1f * delta;
+        if (Input.IsActionPressed("camDown_1")) verticalOrbit += 1f * delta;
+        if (Input.IsActionPressed("camLeft_1")) curRotation -= 1f * delta;
+        if (Input.IsActionPressed("camRight_1")) curRotation += 1f * delta;
 
         if(verticalOrbit > Mathf.Deg2Rad(80f)) verticalOrbit = Mathf.Deg2Rad(80f);
         if(verticalOrbit < Mathf.Deg2Rad(10f)) verticalOrbit = Mathf.Deg2Rad(10f);

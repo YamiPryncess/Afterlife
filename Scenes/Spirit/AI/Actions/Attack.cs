@@ -11,6 +11,7 @@ public class Attack : State {
         self.GetNode<Catalyst>("Catalyst").attackBool = true;
         if(self.reality.target != null) 
             self.move.rotateDir = self.reality.target.GlobalTransform.origin - self.GlobalTransform.origin;
+        //self.move.maxSpeed = 10;
     }
     public override void Update() {
         base.Update();
@@ -18,6 +19,7 @@ public class Attack : State {
     }
     public override void Exit() {
         self.GetNode<Catalyst>("Catalyst").attackBool = false;
+        //self.move.maxSpeed = 16;
         base.Exit();
     }
 }
