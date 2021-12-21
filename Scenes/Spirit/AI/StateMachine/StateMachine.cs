@@ -34,14 +34,18 @@ public class StateMachine {
     public void setNextState(State newState) { 
         if(nextState == null || isPrioric(newState, nextState)) {
             if(!enforceUpdate) currentState.stage = STAGE.EXIT; 
-            nextState = newState;                             
+            nextState = newState;   
+            //Can set a buffer frame counter here. Add delta to it and when it's greater than .166667 ms                          
         }
     }
     /*isPrioric()
     Made especially so if a delicate input like a 2 button input,
     for example Stance + Attack is buffered to cause a special attack
     Then Stance is let go of before buffering ends and attack is still held.
-    The Stance + Attack special attack can take priority over the Lone Attack.*/
+    The Stance + Attack special attack can take priority over the Lone Attack.
+    Only works when comparing against something that is currently buffered.
+    If nothing is buffered, ignore priority and buffer the newState!
+    */
     public bool isPrioric(State newState, State nextState) {
         if(priority[newState.name] > priority[nextState.name]) {
             return true;                                       
@@ -56,6 +60,20 @@ public class StateMachine {
                 return new Idle(this);
             case STATE.ATTACK:
                 return new Attack(this);
+            case STATE.DASH:
+                return new Dash(this);
+            case STATE.RUN:
+                return new Run(this);
+            case STATE.JUMP:
+                return new Jump(this);
+            case STATE.DROP:
+                return new Drop(this);
+            case STATE.LEAP:
+                return new Leap(this);
+            case STATE.STANCE:
+                return new Stance(this);
+            case STATE.BREAK:
+                return new Break(this);
             case STATE.NAVIGATE:
                 return new Navigate(this);
             case STATE.NULL:
@@ -92,5 +110,9 @@ public class StateMachine {
     public void cancel() { finalFrame = true; animator.Stop(true); }
 }
 public enum STATE {
-    IDLE, WALK, DASH, RUN, ATTACK, JUMP, FALL, NAVIGATE, NULL
+    IDLE, NAVIGATE, NULL,
+    WALK, DASH, RUN,
+    JUMP, DROP, LEAP,
+    STANCE, BREAK, 
+    ATTACK
 }

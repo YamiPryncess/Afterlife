@@ -104,7 +104,7 @@ public class Spirit : KinematicBody {
     public void attack(float delta) {
         if(Input.IsActionJustPressed(pad("attack"))) {
             //GD.Print("Button has been pressed!");
-            events[MECHEVENT.ATTPRESS].validate(this);
+            events[MECHEVENT.ATTACKPRESS].validate(this);
         }
     }
     public void hurt() {

@@ -13,7 +13,7 @@ public class Walk : State {
     public override void Update() {
         base.Update();
         move.rotateDir = move.inputDir;
-        move.speedDir = move.chooseVel(VELOCITY.CONTROL);
+        move.speedDir = move.chooseVel(VELOCITY.INFLUENCE);
         if(move.speedDir.Length() > move.maxSpeed){
             move.speedDir = move.speedDir.Normalized() * move.maxSpeed;
         }

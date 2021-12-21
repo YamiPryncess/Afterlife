@@ -35,7 +35,6 @@ public class State {
         } else {
             sSignal = BSIGNAL.RUNNING;
         } frames++;
-        //GD.Print(name, " ", frames,  " ", seconds);
         //GD.Print("Player ", self.player, " ", name, ": ", frames, 
         //" isPlaying: ", animator.IsPlaying(), " stage: ", stage, " nextState: ", parent.nextState);
     }

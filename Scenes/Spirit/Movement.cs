@@ -5,9 +5,9 @@ public class Movement {
     public float gravity {set; get;} = -9.8f/3;
     public float jumpImpulse {set; get;} = 50;
     public float yVelocity {set; get;} = 0;
-    public float speed {set; get;} = 12;
+    public float speed {set; get;} = 2.5f;
     public float maxStrafe {set; get;} = 8;
-    public float maxSpeed {set; get;} = 16;
+    public float maxSpeed {set; get;} = 20;
     public bool moveBool {set; get;} = false;
     public bool jumpBool {set; get;} = false;
     public bool stanceBool {set; get;} = false;
@@ -53,7 +53,7 @@ public class Movement {
         if(self.sm.enforceUpdate) return;
         if(inputDir != Vector3.Zero ) {//velocity is true
             self.events[MECHEVENT.INPUTDIR].validate(self);
-        } else {//velocity is false
+        } else if(velocity < new Vector3(1,0,1) && velocity > new Vector3(-1,0,-1)) {//velocity is false
             self.events[MECHEVENT.NODIR].validate(self);
         }
     }
@@ -82,6 +82,10 @@ public class Movement {
                 return (inputDir != Vector3.Zero ? velocity : Vector3.Zero) + (inputDir * speed);
             case VELOCITY.RUBBER:
                 return ((inputDir != Vector3.Zero ? velocity : Vector3.Zero) + inputDir)  * speed;
+            case VELOCITY.INFLUENCE:
+                return (inputDir != Vector3.Zero ? velocity + (inputDir * speed) : velocity - (Vector3.One * speed));
+            case VELOCITY.CANNON:
+                return (inputDir != Vector3.Zero ? (velocity + inputDir) * speed : velocity - (Vector3.One * (maxSpeed / speed)));
         }
         return Vector3.Zero;
     }
@@ -100,7 +104,7 @@ public class Movement {
 
 }
 public enum VELOCITY {
-    CONTROL, ACCELERATE, DEACCELERATE, PINBALL, SKII, RUBBER, SOAP
+    CONTROL, INFLUENCE, CANNON, PINBALL, SKII, RUBBER, SOAP
 }
 
 //Old
