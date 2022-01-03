@@ -9,13 +9,14 @@ public class Attack : State {
         base.Enter();
         animator.Play("Attack_1");
         self.GetNode<Catalyst>("Catalyst").attackBool = true;
-        if(self.reality.target != null) 
-            self.move.rotateDir = self.reality.target.GlobalTransform.origin - self.GlobalTransform.origin;
+        if(self.reality.target != null && self.player == -1) 
+            self.move.pRotDir = self.reality.target.GlobalTransform.origin - self.GlobalTransform.origin;
         //self.move.maxSpeed = 10;
     }
     public override void Update() {
         base.Update();
         succeed();//succeed for now but later requires callback.
+        self.move.calcMove(self.move.inputDir, self.move.inputDir, 8f, 16f);
     }
     public override void Exit() {
         self.GetNode<Catalyst>("Catalyst").attackBool = false;

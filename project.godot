@@ -27,6 +27,7 @@ enabled=PoolStringArray( "res://addons/Batch_Model_Inheritor/plugin.cfg", "res:/
 framerate=false
 physics=false
 mainloop=false
+vsync=false
 
 [importer_defaults]
 
@@ -1147,7 +1148,7 @@ jump_1={
 }
 interact_1={
 "deadzone": 0.5,
-"events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":5,"pressure":0.0,"pressed":false,"script":null)
+"events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":1,"pressure":0.0,"pressed":false,"script":null)
  ]
 }
 attack_1={
@@ -1162,7 +1163,7 @@ magic_1={
 }
 dash_1={
 "deadzone": 0.5,
-"events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":1,"pressure":0.0,"pressed":false,"script":null)
+"events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":5,"pressure":0.0,"pressed":false,"script":null)
  ]
 }
 focus_1={

@@ -5,17 +5,15 @@ public class Movement {
     public float gravity {set; get;} = -9.8f/3;
     public float jumpImpulse {set; get;} = 50;
     public float yVelocity {set; get;} = 0;
-    public float speed {set; get;} = 2.5f;
-    public float maxStrafe {set; get;} = 8;
-    public float maxSpeed {set; get;} = 20;
     public bool moveBool {set; get;} = false;
     public bool jumpBool {set; get;} = false;
     public bool stanceBool {set; get;} = false;
     public Vector3 velocity {set; get;} = new Vector3();
     public Vector3 inputDir {set; get;} = new Vector3();
     //public float jumpSum {set; get;}
-    public Vector3 speedDir {set; get;} = new Vector3();
-    public Vector3 rotateDir {set; get;} = new Vector3();
+    public Vector3 pMoveDir {set; get;} = new Vector3();
+    public Vector3 pRotDir {set; get;} = new Vector3();
+    private float airTime = 0;
     //public bool autoInput {set; get;} = false;
 
     public Movement (Spirit spirit) {
@@ -23,11 +21,23 @@ public class Movement {
     }
 
     public void updateDirection(Vector3 vector) {
-        inputDir = vector;
-        rotateDir = vector;
+        pMoveDir = vector;
+        pRotDir = vector;
+    }
+    public void crouchInput() {
+        if (Input.IsActionJustPressed(self.pad("crouch"))) {
+            self.events[MECHEVENT.CROUCHPRESS].validate(self);       
+        }
+    }
+    public void dashInput() {
+        if (Input.IsActionJustPressed(self.pad("dash"))) {
+            self.events[MECHEVENT.DASHPRESS].validate(self);
+        }
     }
     public void stanceInput() {
-        stanceBool = Input.IsActionPressed(self.pad("stance"));
+        if (Input.IsActionJustPressed(self.pad("stance"))) {
+            self.events[MECHEVENT.STANCEPRESS].validate(self);       
+        }
     }
     public void moveInput() {
         inputDir = new Vector3();
@@ -59,45 +69,74 @@ public class Movement {
     }
     public void jumpInput(float delta) {
         if(self.sm.enforceUpdate) return;
-        if(Input.IsActionJustPressed(self.pad("jump")) && self.IsOnFloor()) jumpBool = true;
-        else jumpBool = false;
+        if(Input.IsActionJustPressed(self.pad("jump")) && (coyote())) {
+            self.events[MECHEVENT.JUMPPRESS].validate(self);
+        }
+        
+        //jumpBool = true;
+        //else jumpBool = false;
         //if(Input.IsActionJustReleased(pad("jump"))) jumpBool = false;
         //if(jumpBool) jumpSum = Mathf.Clamp(jumpSum + (jumpImpulse * delta), -gravity, 50f);
 
-        if(jumpBool) {
-            //events["Jump"].validate(this);
-        } else {
-            //events[NoJump].validate(this);
-        }
+        //if(jumpBool) {
+        //    //events["Jump"].validate(this);
+        //} else {
+        //    //events[NoJump].validate(this);
+        //}
     }
-    public Vector3 chooseVel(VELOCITY choice = VELOCITY.CONTROL) {
+    public void calcMove(Vector3 direction, Vector3 rotate, float speed, float max, int gravMode = 0) {
+        pRotDir = rotate;
+        pMoveDir = chooseVel(direction, speed, max, VELOCITY.CONTROL);
+        if(pMoveDir.Length() > max){
+            pMoveDir = pMoveDir.Normalized() * max;
+        }
+        if(gravMode == 1) yVelocity = gravity + velocity.y;
+        else if(gravMode == 0) yVelocity = 0;
+        //newGravity = self.stats.phasePoints >= self.phaser.phasable ? 0 : gravity;
+    }
+    public void airUpdate(float delta) {
+        Godot.Collections.Array overlap = self.floor.GetOverlappingBodies();
+        bool onFloor = false;
+        for (int i = 0; i < overlap.Count; i++) {
+            if(overlap[i] != self){
+                onFloor = true;
+                break;
+            }
+        }
+        if(!onFloor) { //May work with a raycast in the future.
+            airTime = Mathf.Clamp(airTime + delta, 0, 10);
+            if(airTime > 0.016666) self.events[MECHEVENT.AIR].validate(self);
+        } else airTime = 0;
+    }
+    public bool coyote() {
+        if(airTime < 0.1) {
+            return true;
+        } return false;
+    }
+    public Vector3 chooseVel(Vector3 direction, float _speed, float _maxSpeed, VELOCITY choice = VELOCITY.CONTROL) {
         switch(choice) {
             case VELOCITY.CONTROL:
-                return inputDir * speed;
+                return direction * _speed;
             case VELOCITY.SKII:
-                return velocity + (inputDir * speed);
+                return velocity + (direction * _speed);
             case VELOCITY.PINBALL:
-                return (velocity + inputDir)  * speed;
+                return (velocity + direction)  * _speed;
             case VELOCITY.SOAP:
-                return (inputDir != Vector3.Zero ? velocity : Vector3.Zero) + (inputDir * speed);
+                return (direction != Vector3.Zero ? velocity : Vector3.Zero) + (direction * _speed);
             case VELOCITY.RUBBER:
-                return ((inputDir != Vector3.Zero ? velocity : Vector3.Zero) + inputDir)  * speed;
+                return ((direction != Vector3.Zero ? velocity : Vector3.Zero) + direction)  * _speed;
             case VELOCITY.INFLUENCE:
-                return (inputDir != Vector3.Zero ? velocity + (inputDir * speed) : velocity - (Vector3.One * speed));
+                return (direction != Vector3.Zero ? velocity + (direction * _speed) : velocity - (Vector3.One * _speed));
             case VELOCITY.CANNON:
-                return (inputDir != Vector3.Zero ? (velocity + inputDir) * speed : velocity - (Vector3.One * (maxSpeed / speed)));
+                return (direction != Vector3.Zero ? (velocity + direction) * _speed : velocity - (Vector3.One * (_maxSpeed / _speed)));
         }
         return Vector3.Zero;
     }
-    public void updateVel() { //Only place velocity should be updated from since it's called from physics process when final calculations are set.
-        velocity = new Vector3(speedDir.x, yVelocity, speedDir.z); //I need to debug what's happening here better. inc w/ phase.
-        //if(player == -1) GD.Print(velocity);
-    }
     public void rotate(float delta) {
         Vector3 origin = self.GlobalTransform.origin;
-        Vector3 pathLook = new Vector3(rotateDir.x + origin.x,
-        origin.y, rotateDir.z + origin.z);
-        if(rotateDir.Length() > .1) {
+        Vector3 pathLook = new Vector3(pRotDir.x + origin.x,
+        origin.y, pRotDir.z + origin.z);
+        if(pRotDir.Length() > .1) {
             self.LookAt(pathLook, Vector3.Up);
         }
     }
@@ -108,6 +147,10 @@ public enum VELOCITY {
 }
 
 //Old
+// public void updateVel() { //Only place velocity should be updated from since it's called from physics process when final calculations are set.
+//     velocity = new Vector3(pMoveDir.x, yVelocity, pMoveDir.z); //I need to debug what's happening here better. inc w/ phase.
+//     //if(player == -1) GD.Print(velocity);
+// }
 //public override void _Input(InputEvent @event) {
     //     if(@event is InputEventKey key) {
     //         GD.Print("Inside input");

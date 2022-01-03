@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class State {
     public STATE name {set; get;}
-    public StateMachine parent {set; get;}
+    public StateMachine sm {set; get;}
     public STAGE stage {set; get;}
     public Spirit self {set; get;}
     public Reality reality {set; get;}
@@ -15,21 +15,26 @@ public class State {
     public bool succeeding = false; //Used for enforced animations who may succeed upon a callback event
     public BSIGNAL sSignal {set; get;} = BSIGNAL.FAIL;//But do not return a signal until the last frame.
     public State(StateMachine _parent) {
-        parent = _parent;
-        self = parent.self;
-        animator = parent.animator;
+        sm = _parent;
+        self = sm.self;
+        animator = sm.animator;
         stage = STAGE.ENTER;
     }
+    public void endEnforce() {
+        sm.enforceUpdate = false;
+        stage = STAGE.EXIT;
+    }
     public virtual void Enter() {
-        parent.enforceUpdate = false;
-        parent.finalFrame = false;
+        sm.enforceUpdate = false;
+        sm.finalFrame = false;
         stage = STAGE.UPDATE;
+        GD.Print(name);
     }
     public virtual void Update() { //No need to redundantly set stage to update again.
         stage = STAGE.UPDATE;
         seconds += delta;
         animator.Advance(delta);
-        if(parent.enforceUpdate == true && parent.finalFrame == true) {
+        if(sm.enforceUpdate == true && sm.finalFrame == true) {
             sSignal = succeeding == true ? BSIGNAL.PASS : BSIGNAL.FAIL;
             stage = STAGE.EXIT;
         } else {
@@ -59,14 +64,14 @@ public class State {
     }
     public void succeed() {
         succeeding = true; 
-        if(!parent.enforceUpdate) { 
+        if(!sm.enforceUpdate) { 
             sSignal = BSIGNAL.PASS;
             stage = STAGE.EXIT;
         } 
     }
     public void fail() {
         succeeding = false;
-        if(!parent.enforceUpdate) {
+        if(!sm.enforceUpdate) {
             sSignal = BSIGNAL.FAIL;
             stage = STAGE.EXIT;
         }

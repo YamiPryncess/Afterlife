@@ -1,5 +1,6 @@
 using Godot;
 public class Phaser : Area {
+    public Spirit self {set; get;}
     private float phaseInterval = 0;
     public int phaseState  {set; get;}= 0;
     private bool button = false;
@@ -85,6 +86,8 @@ public class Phaser : Area {
         for(int i = 0; i < bodies.Count; i++) {
             if(bodies[i] is PhysicsBody body && body.GetCollisionLayerBit(0) == true) {
                 result = true;
+                //if(self.player == 1)
+                //GD.Print(body.Name);
             }
         }
         return result;

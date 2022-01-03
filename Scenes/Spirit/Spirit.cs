@@ -18,11 +18,14 @@ public class Spirit : KinematicBody {
     public Dictionary<BELIEF, bool> beliefs {set; get;} = new Dictionary<BELIEF, bool>();
     public bool animBool {set; get;} = false;
     public bool stanceBool {set; get;} = false;
+    public Area floor {set; get;}
     public override void _Ready() {
         master = GetNode<Master>("/root/Master");
         sm = new StateMachine(this);
         reality = new Reality();
         phaser = GetNode<Phaser>("Phaser");
+        phaser.self = this;
+        floor = GetNode<Area>("Floor");
         hud = (Hud)GetTree().GetNodesInGroup("Huds")[player > -1 ? player - 1 : 1];
         stats = new Stats();
         move = new Movement(this);
@@ -47,7 +50,7 @@ public class Spirit : KinematicBody {
     }
     public override void _Process(float delta) {
         idleDelta = delta;
-        if(stats.lifePoints <= 0) { Visible = false; }
+        if(stats.lifePoints <= 0) { QueueFree(); }
         if(isPlayer()) {
             preProcessState(delta);//Mutates controller variables like inputDir, also calls state change events
             sm.process(delta);//Mutates state variables like speedDir & rotateDir (may use velocity to change them)
@@ -69,6 +72,10 @@ public class Spirit : KinematicBody {
         endAnimator(delta);
         //if(!move.moveBool) 
         move.moveInput();//Also preProcesses important variables for state.
+        move.airUpdate(delta);
+        move.crouchInput();
+        move.dashInput();
+        move.stanceInput();
         move.jumpInput(delta);
         attack(delta);
         phaser.phase(delta, this);
@@ -76,15 +83,14 @@ public class Spirit : KinematicBody {
     public void postProcessState(float delta) {
         //Mandatory logic post state, the state can manipulate how it happens though.
         phaser.solidify(this);
-        move.updateVel();
-        move.velocity = MoveAndSlide(move.velocity, Vector3.Up); //Always moves but states like idle can manipulate it.
+        move.velocity = MoveAndSlide(new Vector3(move.pMoveDir.x, move.yVelocity, move.pMoveDir.z), Vector3.Up); //Always moves but states like idle can manipulate it.
         move.rotate(delta);
-        endLoop();
+        resetPhysics();
     }
-    public void endLoop() {//For restarting state.
+    public void resetPhysics() {//For restarting state.
         move.moveBool = false;
         move.inputDir = Vector3.Zero;
-        move.speedDir = Vector3.Zero;
+        move.pMoveDir = Vector3.Zero;
         move.jumpBool = false;
     }
     public void endAnimator(float delta) {
@@ -120,3 +126,22 @@ public class Spirit : KinematicBody {
     //     }
     //     currentState = currentState.process(delta);//Now we run this always for the update.
     // }
+
+//Create, Update, Delete (Can be unreliable vs reliable)
+//RCP Reliable- "guarantees" packet will be recieved (doing damage)
+//Rcp unreliable- doesn't guarantee it (if it doesn't matter, movement is usually here)
+
+//Transferring inputs
+
+//Transfer velocity
+//Hey this is my velocity at this game time, info is used by server
+//rewinds and simulates whether the velocity was plausible.
+
+//Local player authoritive on clients?
+//Duro says that's why you have rollback?
+//Zylann says it's expeensive depending the complexity of your game
+//Rollback is perfectly acceptable for majority of games according to duro
+//Zylaan says resimulating the game ten times per frames isn't always an option?
+//Bad for multiagents physics driven game according to zylann
+//Duro you just do a simulation of the 2 conflicting actors
+//If you shoot, server says from this vector, shooting a bullet into this vector, is a plausible move

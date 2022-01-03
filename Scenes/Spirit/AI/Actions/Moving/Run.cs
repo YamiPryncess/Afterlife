@@ -10,6 +10,7 @@ public class Run : State {
     }
     public override void Update() {
         base.Update();
+        self.move.calcMove(self.move.inputDir, self.move.inputDir, 20f, 25f); //May eventually be limited on rotation.
     }
     public override void Exit() {
         base.Exit();

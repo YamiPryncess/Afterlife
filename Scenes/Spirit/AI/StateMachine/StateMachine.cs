@@ -24,6 +24,8 @@ public class StateMachine {
         priority.Add(STATE.ATTACK, 2);
         priority.Add(STATE.DASH, 2);
         priority.Add(STATE.JUMP, 2);
+        
+        priority.Add(STATE.AIR, 3);
     }
     /*setNextState(State newState) 
     Constantly Called- Called multiple times in one idle process. The most recent prioric input when state finally accepts a change is what matters.
@@ -47,7 +49,8 @@ public class StateMachine {
     If nothing is buffered, ignore priority and buffer the newState!
     */
     public bool isPrioric(State newState, State nextState) {
-        if(priority[newState.name] > priority[nextState.name]) {
+        if((priority.ContainsKey(newState.name) && priority.ContainsKey(nextState.name)) 
+            && (priority[newState.name] > priority[nextState.name])) {
             return true;                                       
         }
         return false;
@@ -66,6 +69,8 @@ public class StateMachine {
                 return new Run(this);
             case STATE.JUMP:
                 return new Jump(this);
+            case STATE.AIR:
+                return new Air(this);
             case STATE.DROP:
                 return new Drop(this);
             case STATE.LEAP:
@@ -74,6 +79,16 @@ public class StateMachine {
                 return new Stance(this);
             case STATE.BREAK:
                 return new Break(this);
+            case STATE.FLOAT:
+                return new Float(this);
+            case STATE.SKIP:
+                return new Skip(this);
+            case STATE.SLIDE:
+                return new Slide(this);
+            case STATE.CROUCH:
+                return new Crouch(this);
+            case STATE.SNEAK:
+                return new Sneak(this);
             case STATE.NAVIGATE:
                 return new Navigate(this);
             case STATE.NULL:
@@ -113,6 +128,8 @@ public enum STATE {
     IDLE, NAVIGATE, NULL,
     WALK, DASH, RUN,
     JUMP, DROP, LEAP,
-    STANCE, BREAK, 
-    ATTACK
+    STANCE, STRAFE, BREAK,
+    CROUCH, SNEAK, SLIDE,
+    PHASE, FLOAT, SKIP, 
+    ATTACK, ANY, AIR
 }

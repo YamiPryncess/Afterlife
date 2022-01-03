@@ -1,14 +1,17 @@
 using Godot;
 using System.Collections.Generic;
 
-public class Dash : State {
-    public Dash(StateMachine _parent) : base(_parent) {
-        name = STATE.DASH;
+public class Crouch : State {
+    Movement move;
+    public Crouch(StateMachine _parent) : base(_parent) {
+        name = STATE.CROUCH;
     }
     public override void Enter() {
         base.Enter();
+        move = self.move;
     }
     public override void Update() {
+        self.move.yVelocity = 0;
         base.Update();
     }
     public override void Exit() {
