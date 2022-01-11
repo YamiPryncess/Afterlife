@@ -28,6 +28,7 @@ public class Event {
             && condition[curStateEnum] != STATE.NULL) { //If transitioning to same state, NULL stops it.
             State newState = sm.enumToState(condition[curStateEnum]);
             if(newState != null) {
+                //GD.Print("New State:", " ", name);
                 sm.setNextState(newState);
             }//In the future states may also have subordinate states.
         }//Attack for example may have move and jump as subordinates in its class.

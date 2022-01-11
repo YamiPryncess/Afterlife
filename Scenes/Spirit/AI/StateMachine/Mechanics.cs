@@ -61,7 +61,7 @@ public class Mechanics : Object {
         s.events.Add(MECHEVENT.JUMPPRESS, new Event(MECHEVENT.JUMPPRESS, new Dictionary<STATE, STATE>()));
             s.events[MECHEVENT.JUMPPRESS].addCondition(STATE.IDLE, STATE.JUMP);
             s.events[MECHEVENT.JUMPPRESS].addCondition(STATE.WALK, STATE.JUMP);
-            s.events[MECHEVENT.JUMPPRESS].addCondition(STATE.AIR, STATE.JUMP);
+            //s.events[MECHEVENT.JUMPPRESS].addCondition(STATE.AIR, STATE.JUMP); //Why did I do this?
 
             s.events[MECHEVENT.JUMPPRESS].addCondition(STATE.FLOAT, STATE.SKIP);
 
@@ -75,6 +75,7 @@ public class Mechanics : Object {
             s.events[MECHEVENT.AIR].addCondition(STATE.STANCE, STATE.AIR);
             s.events[MECHEVENT.AIR].addCondition(STATE.SLIDE, STATE.AIR);
             s.events[MECHEVENT.AIR].addCondition(STATE.DASH, STATE.AIR);
+            s.events[MECHEVENT.AIR].addCondition(STATE.PHASE, STATE.FLOAT);
 
         s.events.Add(MECHEVENT.LANDED, new Event(MECHEVENT.LANDED, new Dictionary<STATE, STATE>()));
             s.events[MECHEVENT.LANDED].addCondition(STATE.JUMP, STATE.IDLE);

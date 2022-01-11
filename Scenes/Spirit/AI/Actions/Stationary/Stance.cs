@@ -9,7 +9,6 @@ public class Stance : State {
         base.Enter();
     }
     public override void Update() {
-        self.move.yVelocity = 0;
         base.Update();
     }
     public override void Exit() {

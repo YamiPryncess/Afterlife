@@ -10,7 +10,6 @@ public class Idle : State {
     }
     public override void Update() {
         base.Update();
-        self.move.yVelocity = 0;
         if(seconds > 3) {
             succeed();
         }

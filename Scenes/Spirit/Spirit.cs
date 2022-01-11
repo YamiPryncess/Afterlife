@@ -8,8 +8,10 @@ public class Spirit : KinematicBody {
     public Hud hud {set; get;}
     public Stats stats {set; get;}
     public Phaser phaser {set; get;}
+    public KinematicCollision collision {set; get;}
     public float idleDelta {set; get;}
     public Movement move {set; get;}
+    public MOVEMODE moveMode = MOVEMODE.SLIDE;
     [Export] public int player {set; get;} = -1;
     public Dictionary<MECHEVENT, Event> events {set; get;} = 
         new Dictionary<MECHEVENT, Event>();
@@ -18,6 +20,7 @@ public class Spirit : KinematicBody {
     public Dictionary<BELIEF, bool> beliefs {set; get;} = new Dictionary<BELIEF, bool>();
     public bool animBool {set; get;} = false;
     public bool stanceBool {set; get;} = false;
+    public Vector3 snap {set; get;}
     public Area floor {set; get;}
     public override void _Ready() {
         master = GetNode<Master>("/root/Master");
@@ -29,6 +32,7 @@ public class Spirit : KinematicBody {
         hud = (Hud)GetTree().GetNodesInGroup("Huds")[player > -1 ? player - 1 : 1];
         stats = new Stats();
         move = new Movement(this);
+        snap = Vector3.Zero;
         
         if(isPlayer()) {
             master.mechanics.Call("basics", this);
@@ -62,28 +66,32 @@ public class Spirit : KinematicBody {
         //if(player == 1) GD.Print(sm.currentState.name, " ", velocity);
         postProcessState(delta); //Mutates physics variables like Velocity, then resets controller and input variables
     }
-    public void frameSignal() {//Game is idle process delta based so I don't need this unless as an option.
-        if(phaser.phaseState > 0) {
-            phaser.frame++;
-        }
-    }
     public void preProcessState(float delta) {
         //Handles Event Observer pattern changes state before state processes
         endAnimator(delta);
         //if(!move.moveBool) 
         move.moveInput();//Also preProcesses important variables for state.
-        move.airUpdate(delta);
+        move.preProcess(delta);
         move.crouchInput();
         move.dashInput();
         move.stanceInput();
-        move.jumpInput(delta);
         attack(delta);
         phaser.phase(delta, this);
     }
     public void postProcessState(float delta) {
         //Mandatory logic post state, the state can manipulate how it happens though.
         phaser.solidify(this);
-        move.velocity = MoveAndSlide(new Vector3(move.pMoveDir.x, move.yVelocity, move.pMoveDir.z), Vector3.Up); //Always moves but states like idle can manipulate it.
+        //GD.Print(move.velocity.y);
+        //if(player == 1 && sm.currentState.name == STATE.AIR) GD.Print(sm.currentState.name, " | Vel: ", move.velocity.y, " | Mod: ", move.modVelocity, " | IsOnFloor: ", IsOnFloor());
+        if(player == 1) GD.Print(sm.currentState.name, " | Vel: ", move.velocity.y, " | Mod: ", move.modVelocity, " | IsOnFloor: ", IsOnFloor());
+        //if(player == 1) GD.Print(sm.currentState.name, " ", move.modVelocity);
+        //if(player == 1) GD.Print(move.velocity.y + move.gravity * delta);
+        move.velocity = MoveAndSlideWithSnap(new Vector3(move.pMoveDir.x, 
+                        (move.velocity.y + move.modVelocity) + (move.gravity * delta), 
+                        move.pMoveDir.z), snap, Vector3.Up, true); 
+        //Always moves but states like idle can manipulate it.
+        //if(player == 1) GD.Print(sm.currentState.name, " ", move.velocity);
+        sm.currentState.physics = true;
         move.rotate(delta);
         resetPhysics();
     }
@@ -92,6 +100,12 @@ public class Spirit : KinematicBody {
         move.inputDir = Vector3.Zero;
         move.pMoveDir = Vector3.Zero;
         move.jumpBool = false;
+        move.modVelocity = 0;
+    }
+    public void frameSignal() {//Game is idle process delta based so I don't need this unless as an option.
+        if(phaser.phaseState > 0) {
+            phaser.frame++;
+        }
     }
     public void endAnimator(float delta) {
         if(!sm.animator.IsPlaying() && sm.nextState == null && animBool == true) {
@@ -118,7 +132,22 @@ public class Spirit : KinematicBody {
         hud.healthProgress.Value = stats.lifePoints;
     }
 }
+
+public enum MOVEMODE {
+    SLIDE, COLLIDE, SNAP
+}
 //Old
+// switch(moveMode) {
+//             case MOVEMODE.SLIDE: 
+//                 break;
+//                         case MOVEMODE.COLLIDE:
+//                 move.modVelocity += move.gravity * delta;
+//                 collision = MoveAndCollide(new Vector3(move.pMoveDir.x * delta, move.modVelocity, move.pMoveDir.z * delta));
+//                 break;
+//             case MOVEMODE.SNAP: 
+
+//                 break;
+//         }
     // public void processState(float delta) {//StateMachine.Update() runs once per frame confirmed.
     //     //Makes update() frames run regardless if state is exited before in preProcessState().
     //     if(currentState.getStage() == EVENT.EXIT) {

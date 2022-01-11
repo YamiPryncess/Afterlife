@@ -7,15 +7,20 @@ public class Air : State {
     }
     public override void Enter() {
         base.Enter();
+        self.snap = Vector3.Zero;
+        self.move.gravity = -80f;
     }
     public override void Update() {
         base.Update();
-        self.move.calcMove(self.move.inputDir, self.move.inputDir, 8f, 16f, 1);
-        if(self.IsOnFloor()){ //Switch out when godot physics says its on floor but enter air state when custom area says it's not on floor.
-            self.events[MECHEVENT.LANDED].validate(self);
-        }
+        self.move.calcMove(self.move.inputDir, self.move.inputDir, 16f, 16f);
     }
     public override void Exit() {
         base.Exit();
+        self.move.gravity = 0;
     }
 }
+
+
+    // if(self.IsOnFloor()){ //Switch out when godot physics says its on floor but enter air state when custom area says it's not on floor.
+    //     self.events[MECHEVENT.LANDED].validate(self);
+    // }

@@ -2,13 +2,13 @@ using Godot;
 
 public class Movement {
     private Spirit self;
-    public float gravity {set; get;} = -9.8f/3;
-    public float jumpImpulse {set; get;} = 50;
-    public float yVelocity {set; get;} = 0;
+    public float gravity {set; get;} = -80f;
+    //public float yVelocity {set; get;} = 0; //Only gets changed in IdleProcess/PreProcess/ProcessState
     public bool moveBool {set; get;} = false;
     public bool jumpBool {set; get;} = false;
     public bool stanceBool {set; get;} = false;
-    public Vector3 velocity {set; get;} = new Vector3();
+    public Vector3 velocity {set; get;} = new Vector3(); //Only gets changed in PhysicsProcess/PostProcess
+    public float modVelocity {set; get;} = 0;
     public Vector3 inputDir {set; get;} = new Vector3();
     //public float jumpSum {set; get;}
     public Vector3 pMoveDir {set; get;} = new Vector3();
@@ -67,46 +67,46 @@ public class Movement {
             self.events[MECHEVENT.NODIR].validate(self);
         }
     }
-    public void jumpInput(float delta) {
-        if(self.sm.enforceUpdate) return;
-        if(Input.IsActionJustPressed(self.pad("jump")) && (coyote())) {
-            self.events[MECHEVENT.JUMPPRESS].validate(self);
-        }
-        
-        //jumpBool = true;
-        //else jumpBool = false;
-        //if(Input.IsActionJustReleased(pad("jump"))) jumpBool = false;
-        //if(jumpBool) jumpSum = Mathf.Clamp(jumpSum + (jumpImpulse * delta), -gravity, 50f);
-
-        //if(jumpBool) {
-        //    //events["Jump"].validate(this);
-        //} else {
-        //    //events[NoJump].validate(this);
-        //}
-    }
-    public void calcMove(Vector3 direction, Vector3 rotate, float speed, float max, int gravMode = 0) {
+    public void calcMove(Vector3 direction, Vector3 rotate, float speed, float max) { //Process, inside of state
         pRotDir = rotate;
         pMoveDir = chooseVel(direction, speed, max, VELOCITY.CONTROL);
         if(pMoveDir.Length() > max){
             pMoveDir = pMoveDir.Normalized() * max;
         }
-        if(gravMode == 1) yVelocity = gravity + velocity.y;
-        else if(gravMode == 0) yVelocity = 0;
         //newGravity = self.stats.phasePoints >= self.phaser.phasable ? 0 : gravity;
     }
-    public void airUpdate(float delta) {
+    public void preProcess(float delta) { //Prior to state
+        STATE state = self.sm.currentState.name;
+        //Air
         Godot.Collections.Array overlap = self.floor.GetOverlappingBodies();
-        bool onFloor = false;
+        bool areaFloor = false;
         for (int i = 0; i < overlap.Count; i++) {
-            if(overlap[i] != self){
-                onFloor = true;
+            if(overlap[i] != self) {
+                areaFloor = true;
                 break;
             }
         }
-        if(!onFloor) { //May work with a raycast in the future.
-            airTime = Mathf.Clamp(airTime + delta, 0, 10);
-            if(airTime > 0.016666) self.events[MECHEVENT.AIR].validate(self);
-        } else airTime = 0;
+        airTime = areaFloor ? 0 : airTime = Mathf.Clamp(airTime + delta, 0, 10);
+        if(state == STATE.JUMP) {
+            if(self.IsOnFloor() && self.sm.currentState.physics == true) {
+                self.events[MECHEVENT.LANDED].validate(self);
+            } else if(modVelocity <= 0) { //velocity.y <= 0) {
+                self.events[MECHEVENT.AIR].validate(self);
+            }
+        } else if(state == STATE.AIR) {
+            if(self.IsOnFloor()) {
+                self.events[MECHEVENT.LANDED].validate(self);
+            }
+        } else {//Not included in falling.
+            if(Input.IsActionJustPressed(self.pad("jump")) && ((coyote() || areaFloor) || self.IsOnFloor())) {
+                self.events[MECHEVENT.JUMPPRESS].validate(self);
+            } else if(!self.IsOnFloor()) { //Successfully reduced IsOnFloor == false with snap and cylinder collision but player still slides off some stuff. 
+                self.events[MECHEVENT.AIR].validate(self); //Might need to switch this to areaFloor and do !isOnFloor gravity in walk/idle etc instead?
+                //Must apply gravity if !isonfloor either way because snap needs you to be on the floor.
+            } else if(self.IsOnFloor()) { //Unimportant. Test to make sure it doesn't break stuff but it shouldn't.
+                self.move.velocity = new Vector3(self.move.velocity.x, 0, self.move.velocity.z);
+            }
+        }
     }
     public bool coyote() {
         if(airTime < 0.1) {
@@ -147,6 +147,50 @@ public enum VELOCITY {
 }
 
 //Old
+//else if(!areaFloor) { // && airTime > 0.02) {//Helps with preventing state switching from air to idle/walk when applying no gravity to standing player.
+// else if(!self.IsOnFloor()) { //If not in air or transitioning to air. Adjust gravity as needed :/
+//                 gravity = -.1f;
+//             }
+    // public void jumpInput(float delta) {
+    //     //jumpBool = true;
+    //     //else jumpBool = false;
+    //     //if(Input.IsActionJustReleased(pad("jump"))) jumpBool = false;
+    //     //if(jumpBool) jumpSum = Mathf.Clamp(jumpSum + (jumpImpulse * delta), -gravity, 50f);
+
+    //     //if(jumpBool) {
+    //     //    //events["Jump"].validate(this);
+    //     //} else {
+    //     //    //events[NoJump].validate(this);
+    //     //}
+    // }
+//Attempt 2 for air update
+        // if(!self.IsOnFloor()) { //May work with a raycast in the future but difference is said to be marginal.
+        //     airTime = Mathf.Clamp(airTime + delta, 0, 10);
+        //     if((self.sm.currentState.name != STATE.JUMP && airTime > .016666) 
+        //         || (self.sm.currentState.name == STATE.JUMP && yVelocity <= 0)) {
+        //         self.events[MECHEVENT.AIR].validate(self);
+        //     }
+        // } else if(self.IsOnFloor()) { //Using areaFloor to get cool effects but may be better if they def collide KinematicBody.IsOnFloor() to even/ground character heights?
+        //     airTime = 0;
+        //     if(self.sm.currentState.name == STATE.JUMP || self.sm.currentState.name == STATE.AIR) { //Definitely works best with KinematicBody.IsOnFloor()
+        //         self.events[MECHEVENT.LANDED].validate(self);
+        //     }
+        // }
+//Attempted 1 for air update
+//  public void airUpdate(float delta) {
+//         Godot.Collections.Array overlap = self.floor.GetOverlappingBodies();
+//         bool onFloor = false;
+//         for (int i = 0; i < overlap.Count; i++) {
+//             if(overlap[i] != self){
+//                 onFloor = true;
+//                 break;
+//             }
+//         }
+//         if(!onFloor) { //May work with a raycast in the future.
+//             airTime = Mathf.Clamp(airTime + delta, 0, 10);
+//             if(airTime > 0.016666) self.events[MECHEVENT.AIR].validate(self);
+//         } else airTime = 0;
+//     }
 // public void updateVel() { //Only place velocity should be updated from since it's called from physics process when final calculations are set.
 //     velocity = new Vector3(pMoveDir.x, yVelocity, pMoveDir.z); //I need to debug what's happening here better. inc w/ phase.
 //     //if(player == -1) GD.Print(velocity);

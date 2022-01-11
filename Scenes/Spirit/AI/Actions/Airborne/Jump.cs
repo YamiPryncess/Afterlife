@@ -3,23 +3,24 @@ using System.Collections.Generic;
 
 public class Jump : State {
     Movement move;
-    float speed = 8f;
-    float max = 16f;
-    bool trulyJumped = false;
-    bool attemptingJump = false;
     public Jump(StateMachine _parent) : base(_parent) {
         name = STATE.JUMP;
     }
     public override void Enter() {
         base.Enter();
         move = self.move;
+        move.gravity = -80f;
+        self.snap = Vector3.Zero;
+        move.modVelocity = 32; //Bug: Double Jump is possible by pressing x fast. (Might be fixed)
     }
     public override void Update() {
         base.Update();
-        move.yVelocity = move.jumpImpulse;
+        self.move.calcMove(self.move.inputDir, self.move.inputDir, 16f, 16f);
+        //Y velocity keeps getting applied if jump doesn't end.
     }
     public override void Exit() {
         base.Exit();
+        move.gravity = 0;
     }
 }
 

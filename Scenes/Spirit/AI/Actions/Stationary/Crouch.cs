@@ -11,7 +11,6 @@ public class Crouch : State {
         move = self.move;
     }
     public override void Update() {
-        self.move.yVelocity = 0;
         base.Update();
     }
     public override void Exit() {

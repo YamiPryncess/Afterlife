@@ -14,6 +14,7 @@ public class State {
     public bool exited {set; get;} = false;
     public bool succeeding = false; //Used for enforced animations who may succeed upon a callback event
     public BSIGNAL sSignal {set; get;} = BSIGNAL.FAIL;//But do not return a signal until the last frame.
+    public bool physics = false;
     public State(StateMachine _parent) {
         sm = _parent;
         self = sm.self;
@@ -28,7 +29,9 @@ public class State {
         sm.enforceUpdate = false;
         sm.finalFrame = false;
         stage = STAGE.UPDATE;
-        GD.Print(name);
+        self.snap = Vector3.Down;
+        self.move.gravity = 0;
+        //if(self.player == 1) GD.Print("Enter:", " ", name);
     }
     public virtual void Update() { //No need to redundantly set stage to update again.
         stage = STAGE.UPDATE;

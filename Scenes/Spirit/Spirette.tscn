@@ -7,10 +7,7 @@
 player = -2
 
 [node name="Goxidette2" parent="." index="0" instance=ExtResource( 1 )]
-transform = Transform( 100, 0, 0, 0, -4.37114e-06, 100, 0, -100, -4.37114e-06, 0, -1.5, 0 )
-
-[node name="MeshInstance" parent="." index="3"]
-visible = false
+transform = Transform( 100, 0, 0, 0, -4.37114e-06, 100, 0, -100, -4.37114e-06, 1.53446, -1.02745, 0 )
 
 [node name="MeshInstance" parent="MeshInstance" index="0"]
 visible = false
@@ -23,3 +20,5 @@ visible = false
 
 [node name="CollisionShape" parent="Catalyst" index="1"]
 visible = false
+
+[connection signal="body_entered" from="Catalyst" to="Catalyst" method="body_entered"]
