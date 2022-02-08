@@ -2,11 +2,8 @@ using Godot;
 
 public class Movement {
     private Spirit self;
-    public float gravity {set; get;} = -80f;
+    public float gravity {set; get;} = -0f;
     //public float yVelocity {set; get;} = 0; //Only gets changed in IdleProcess/PreProcess/ProcessState
-    public bool moveBool {set; get;} = false;
-    public bool jumpBool {set; get;} = false;
-    public bool stanceBool {set; get;} = false;
     public Vector3 velocity {set; get;} = new Vector3(); //Only gets changed in PhysicsProcess/PostProcess
     public float modVelocity {set; get;} = 0;
     public Vector3 inputDir {set; get;} = new Vector3();
@@ -24,19 +21,21 @@ public class Movement {
         pMoveDir = vector;
         pRotDir = vector;
     }
-    public void crouchInput() {
+    public void crouchInput() {//Tap
         if (Input.IsActionJustPressed(self.pad("crouch"))) {
             self.events[MECHEVENT.CROUCHPRESS].validate(self);       
         }
     }
-    public void dashInput() {
+    public void dashInput() {//Tap
         if (Input.IsActionJustPressed(self.pad("dash"))) {
             self.events[MECHEVENT.DASHPRESS].validate(self);
         }
     }
-    public void stanceInput() {
+    public void stanceInput() {//Hold
         if (Input.IsActionJustPressed(self.pad("stance"))) {
             self.events[MECHEVENT.STANCEPRESS].validate(self);       
+        } else if (!Input.IsActionPressed(self.pad("stance"))) {
+            self.events[MECHEVENT.STANCERELEASE].validate(self);       
         }
     }
     public void moveInput() {
@@ -57,14 +56,6 @@ public class Movement {
         //if(!inputPressed) inputDir = Vector3.Zero;
         if (inputDir.Length() > 1.0) {
             inputDir = inputDir.Normalized();
-        }
-
-        moveBool = true;
-        if(self.sm.enforceUpdate) return;
-        if(inputDir != Vector3.Zero ) {//velocity is true
-            self.events[MECHEVENT.INPUTDIR].validate(self);
-        } else if(velocity < new Vector3(1,0,1) && velocity > new Vector3(-1,0,-1)) {//velocity is false
-            self.events[MECHEVENT.NODIR].validate(self);
         }
     }
     public void calcMove(Vector3 direction, Vector3 rotate, float speed, float max) { //Process, inside of state
@@ -147,6 +138,13 @@ public enum VELOCITY {
 }
 
 //Old
+
+// if(self.sm.enforceUpdate) return;
+// if(inputDir != Vector3.Zero ) {//velocity is true
+//     self.events[MECHEVENT.INPUTDIR].validate(self);
+// } else if(velocity < new Vector3(1,0,1) && velocity > new Vector3(-1,0,-1)) {//velocity is false
+//     self.events[MECHEVENT.NODIR].validate(self);
+// }
 //else if(!areaFloor) { // && airTime > 0.02) {//Helps with preventing state switching from air to idle/walk when applying no gravity to standing player.
 // else if(!self.IsOnFloor()) { //If not in air or transitioning to air. Adjust gravity as needed :/
 //                 gravity = -.1f;

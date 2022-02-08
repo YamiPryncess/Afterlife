@@ -2,8 +2,8 @@ using Godot;
 using System;
 
 public class Camera : Godot.Camera {
-    public float distance {set; get;} = 6;
-    public float height {set; get;} = 6;
+    //public float distance {set; get;} = 10;
+    //public float height {set; get;} = 6;
     public float curRotation {set; get;} = 1.8f;
     public float verticalOrbit {set; get;} = Mathf.Deg2Rad(45);
     public Vector3 offset {set; get;}
@@ -24,7 +24,7 @@ public class Camera : Godot.Camera {
         if(verticalOrbit > Mathf.Deg2Rad(80f)) verticalOrbit = Mathf.Deg2Rad(80f);
         if(verticalOrbit < Mathf.Deg2Rad(10f)) verticalOrbit = Mathf.Deg2Rad(10f);
         float vertOrbDeg = Mathf.Rad2Deg(verticalOrbit);
-        float minOffset = 8;
+        float minOffset = 12;
         float tooCloseAngle = 60;
         float pushCamera = Mathf.Deg2Rad(tooCloseAngle); //Forgot what this is
 

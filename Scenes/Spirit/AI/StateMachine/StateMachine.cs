@@ -13,10 +13,10 @@ public class StateMachine {
     public StateMachine(Spirit _self) {
         self = _self;
         animator = self.GetNode<AnimationPlayer>("Animator");
-        currentState = new Idle(this);
+        currentState = new Walk(this);
 
         priority = new Dictionary<STATE, int>();
-        priority.Add(STATE.IDLE, 0);
+        //priority.Add(STATE.IDLE, 0);
 
         priority.Add(STATE.WALK, 1);
         priority.Add(STATE.RUN, 1);
@@ -59,8 +59,8 @@ public class StateMachine {
         switch (newState){
             case STATE.WALK:
                 return new Walk(this);
-            case STATE.IDLE:
-                return new Idle(this);
+            case STATE.WAIT:
+                return new Wait(this);
             case STATE.ATTACK:
                 return new Attack(this);
             case STATE.DASH:
@@ -85,8 +85,6 @@ public class StateMachine {
                 return new Skip(this);
             case STATE.SLIDE:
                 return new Slide(this);
-            case STATE.CROUCH:
-                return new Crouch(this);
             case STATE.SNEAK:
                 return new Sneak(this);
             case STATE.NAVIGATE:
@@ -118,18 +116,18 @@ public class StateMachine {
         }
     }
     public void restate() {
-        if(nextState == null) nextState = new Idle(this);
+        if(nextState == null) nextState = new Walk(this);
         currentState = nextState;
         nextState = null;
     }
     public void cancel() { finalFrame = true; animator.Stop(true); }
 }
 public enum STATE {
-    IDLE, NAVIGATE, NULL,
+    NAVIGATE, NULL, WAIT,
     WALK, DASH, RUN,
     JUMP, DROP, LEAP,
-    STANCE, STRAFE, BREAK,
-    CROUCH, SNEAK, SLIDE,
+    STANCE, BREAK,
+    SNEAK, SLIDE,
     PHASE, FLOAT, SKIP, 
     ATTACK, ANY, AIR
 }

@@ -5,7 +5,7 @@ public class Behavior : Object {
     public Behavior() {} //preferences dictionary will have to be created as a godot dictionary.
     public void sample(Spirit self) {
         BTree bTree = new BTree(self, BTYPE.SEQUENCE);//Start Root
-        bTree.action(new BAction(self, STATE.IDLE)).chancesPerCycle(5, 5).ascendTree()
+        bTree.action(new BAction(self, STATE.WAIT)).chancesPerCycle(5, 5).ascendTree()
         
         .descendTree(new BNode(self, BTYPE.SEQUENCE))
         .action(new BAction(self, STATE.NAVIGATE)).ascendTree()

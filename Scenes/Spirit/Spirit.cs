@@ -83,9 +83,10 @@ public class Spirit : KinematicBody {
         phaser.solidify(this);
         //GD.Print(move.velocity.y);
         //if(player == 1 && sm.currentState.name == STATE.AIR) GD.Print(sm.currentState.name, " | Vel: ", move.velocity.y, " | Mod: ", move.modVelocity, " | IsOnFloor: ", IsOnFloor());
-        if(player == 1) GD.Print(sm.currentState.name, " | Vel: ", move.velocity.y, " | Mod: ", move.modVelocity, " | IsOnFloor: ", IsOnFloor());
+        //if(player == 1) GD.Print(sm.currentState.name, " | Vel: ", move.velocity.y, " | Mod: ", move.modVelocity, " | IsOnFloor: ", IsOnFloor());
         //if(player == 1) GD.Print(sm.currentState.name, " ", move.modVelocity);
         //if(player == 1) GD.Print(move.velocity.y + move.gravity * delta);
+        //if(player == 1 && GlobalTransform.origin.y > 2.45) GD.Print(GlobalTransform.origin.y);
         move.velocity = MoveAndSlideWithSnap(new Vector3(move.pMoveDir.x, 
                         (move.velocity.y + move.modVelocity) + (move.gravity * delta), 
                         move.pMoveDir.z), snap, Vector3.Up, true); 
@@ -96,10 +97,8 @@ public class Spirit : KinematicBody {
         resetPhysics();
     }
     public void resetPhysics() {//For restarting state.
-        move.moveBool = false;
         move.inputDir = Vector3.Zero;
         move.pMoveDir = Vector3.Zero;
-        move.jumpBool = false;
         move.modVelocity = 0;
     }
     public void frameSignal() {//Game is idle process delta based so I don't need this unless as an option.

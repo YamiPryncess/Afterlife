@@ -3,15 +3,17 @@ using System.Collections.Generic;
 
 public class Jump : State {
     Movement move;
+    float startPoint;
     public Jump(StateMachine _parent) : base(_parent) {
         name = STATE.JUMP;
     }
     public override void Enter() {
         base.Enter();
         move = self.move;
-        move.gravity = -80f;
+        move.gravity = -40f;
         self.snap = Vector3.Zero;
-        move.modVelocity = 32; //Bug: Double Jump is possible by pressing x fast. (Might be fixed)
+        move.modVelocity = 30; //Bug: Double Jump is possible by pressing x fast. (Might be fixed)
+        //startPoint = self.GlobalTransform.origin.y;
     }
     public override void Update() {
         base.Update();
@@ -21,6 +23,7 @@ public class Jump : State {
     public override void Exit() {
         base.Exit();
         move.gravity = 0;
+        //GD.Print(startPoint, ", ", self.GlobalTransform.origin.y);
     }
 }
 
