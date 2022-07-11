@@ -1,9 +1,12 @@
 using Godot;
 using System.Collections.Generic;
+using System;
 
 public class State {
     public STATE name {set; get;}
+    public STATETYPE stateType = STATETYPE.ANY;
     public StateMachine sm {set; get;}
+    public State next {set; get;}
     public STAGE stage {set; get;}
     public Spirit self {set; get;}
     public Reality reality {set; get;}
@@ -14,30 +17,28 @@ public class State {
     public bool exited {set; get;} = false;
     public bool succeeding = false; //Used for enforced animations who may succeed upon a callback event
     public BSIGNAL sSignal {set; get;} = BSIGNAL.FAIL;//But do not return a signal until the last frame.
-    public bool physics = false;
+    public bool physicsCycledOnce {set; get;} = false;
+    public bool locked = false;
     public State(StateMachine _parent) {
         sm = _parent;
         self = sm.self;
         animator = sm.animator;
         stage = STAGE.ENTER;
     }
-    public void endEnforce() {
-        sm.enforceUpdate = false;
+    public void cancel() {
+        locked = false;
         stage = STAGE.EXIT;
     }
     public virtual void Enter() {
-        sm.enforceUpdate = false;
-        sm.finalFrame = false;
         stage = STAGE.UPDATE;
         self.snap = Vector3.Down;
-        self.move.gravity = 0;
-        //if(self.player == 1) GD.Print("Enter:", " ", name);
+        //if(self.player == 1) GD.Print(stateType + " Enter: ", name);
     }
     public virtual void Update() { //No need to redundantly set stage to update again.
         stage = STAGE.UPDATE;
         seconds += delta;
-        animator.Advance(delta);
-        if(sm.enforceUpdate == true && sm.finalFrame == true) {
+        //if(stateType == STATETYPE.ACTION) animator.Advance(delta);
+        if(!locked && next != null) {
             sSignal = succeeding == true ? BSIGNAL.PASS : BSIGNAL.FAIL;
             stage = STAGE.EXIT;
         } else {
@@ -46,9 +47,10 @@ public class State {
         //GD.Print("Player ", self.player, " ", name, ": ", frames, 
         //" isPlaying: ", animator.IsPlaying(), " stage: ", stage, " nextState: ", parent.nextState);
     }
-    public virtual void Exit() { stage = STAGE.EXIT; exited = true;} 
-    public void process(float _delta) { //Here are the if statements that tell all process functions to run
+    public virtual void Exit() { stage = STAGE.EXIT; exited = true; } 
+    public void process(float _delta, STATETYPE type) { //Here are the if statements that tell all process functions to run
 	    delta = _delta;
+        stateType = type;
         if (stage == STAGE.ENTER) Enter();
 	    if (stage == STAGE.UPDATE) Update(); 
 	    if (stage == STAGE.EXIT) Exit();
@@ -67,14 +69,14 @@ public class State {
     }
     public void succeed() {
         succeeding = true; 
-        if(!sm.enforceUpdate) { 
+        if(!locked) { 
             sSignal = BSIGNAL.PASS;
             stage = STAGE.EXIT;
         } 
     }
     public void fail() {
         succeeding = false;
-        if(!sm.enforceUpdate) {
+        if(!locked) {
             sSignal = BSIGNAL.FAIL;
             stage = STAGE.EXIT;
         }

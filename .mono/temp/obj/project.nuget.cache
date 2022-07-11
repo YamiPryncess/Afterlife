@@ -1,11 +1,9 @@
 {
   "version": 2,
-  "dgSpecHash": "5+xm+mGO2dssIj6u0mtf+LeGYhNb8I/3lE9qhdw5CPTfazBnTEMxTyO+b8xsnEnHMOF9AP30Iny027OnvXjD0A==",
+  "dgSpecHash": "C7zx3tVOXnYQTrTfo926RcARSDrcFacVUHe/XlWuTH1Roc3rPMYFY8h/K4s4jaR+bjg4gtSajzg+EpqzfKFtaQ==",
   "success": true,
   "projectFilePath": "L:\\Projects\\GameDev\\Afterlife\\Afterlife.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\zen86\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.0\\microsoft.netframework.referenceassemblies.1.0.0.nupkg.sha512",
-    "C:\\Users\\zen86\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net472\\1.0.0\\microsoft.netframework.referenceassemblies.net472.1.0.0.nupkg.sha512",
     "C:\\Users\\zen86\\.nuget\\packages\\newtonsoft.json\\11.0.2\\newtonsoft.json.11.0.2.nupkg.sha512"
   ],
   "logs": []

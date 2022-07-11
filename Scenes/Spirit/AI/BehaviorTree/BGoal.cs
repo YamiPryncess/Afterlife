@@ -11,7 +11,7 @@ public class BGoal : BNode {
 
     }
     public BSIGNAL gProcess() {
-        if(self.sm.currentState.frames <= 0) {
+        if(self.sm.framesZero(STATETYPE.AI)) {
             return condition(self);
         }
         return BSIGNAL.PASS;

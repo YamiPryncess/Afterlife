@@ -2,7 +2,7 @@ using Godot;
 
 public class Movement {
     private Spirit self;
-    public float gravity {set; get;} = -0f;
+    public float gravity {set; get;} = -90f;
     //public float yVelocity {set; get;} = 0; //Only gets changed in IdleProcess/PreProcess/ProcessState
     public Vector3 velocity {set; get;} = new Vector3(); //Only gets changed in PhysicsProcess/PostProcess
     public float modVelocity {set; get;} = 0;
@@ -23,19 +23,19 @@ public class Movement {
     }
     public void crouchInput() {//Tap
         if (Input.IsActionJustPressed(self.pad("crouch"))) {
-            self.events[MECHEVENT.CROUCHPRESS].validate(self);       
+            self.sm.mechEvents[STATETYPE.MOTION][MECHEVENT.CROUCHPRESS].validate(self);       
         }
     }
     public void dashInput() {//Tap
         if (Input.IsActionJustPressed(self.pad("dash"))) {
-            self.events[MECHEVENT.DASHPRESS].validate(self);
+            self.sm.mechEvents[STATETYPE.MOTION][MECHEVENT.DASHPRESS].validate(self);
         }
     }
     public void stanceInput() {//Hold
         if (Input.IsActionJustPressed(self.pad("stance"))) {
-            self.events[MECHEVENT.STANCEPRESS].validate(self);       
+            self.sm.mechEvents[STATETYPE.MOTION][MECHEVENT.STANCEPRESS].validate(self);       
         } else if (!Input.IsActionPressed(self.pad("stance"))) {
-            self.events[MECHEVENT.STANCERELEASE].validate(self);       
+            self.sm.mechEvents[STATETYPE.MOTION][MECHEVENT.STANCERELEASE].validate(self);       
         }
     }
     public void moveInput() {
@@ -67,7 +67,7 @@ public class Movement {
         //newGravity = self.stats.phasePoints >= self.phaser.phasable ? 0 : gravity;
     }
     public void preProcess(float delta) { //Prior to state
-        STATE state = self.sm.currentState.name;
+        STATE state = self.sm.activeStates[STATETYPE.MOTION].name;
         //Air
         Godot.Collections.Array overlap = self.floor.GetOverlappingBodies();
         bool areaFloor = false;
@@ -79,20 +79,20 @@ public class Movement {
         }
         airTime = areaFloor ? 0 : airTime = Mathf.Clamp(airTime + delta, 0, 10);
         if(state == STATE.JUMP) {
-            if(self.IsOnFloor() && self.sm.currentState.physics == true) {
-                self.events[MECHEVENT.LANDED].validate(self);
+            if(self.IsOnFloor() && self.sm.activeStates[STATETYPE.MOTION].physicsCycledOnce == true) {
+                self.sm.mechEvents[STATETYPE.MOTION][MECHEVENT.LANDED].validate(self);
             } else if(modVelocity <= 0) { //velocity.y <= 0) {
-                self.events[MECHEVENT.AIR].validate(self);
+                self.sm.mechEvents[STATETYPE.MOTION][MECHEVENT.AIR].validate(self);
             }
         } else if(state == STATE.AIR) {
             if(self.IsOnFloor()) {
-                self.events[MECHEVENT.LANDED].validate(self);
+                self.sm.mechEvents[STATETYPE.MOTION][MECHEVENT.LANDED].validate(self);
             }
         } else {//Not included in falling.
             if(Input.IsActionJustPressed(self.pad("jump")) && ((coyote() || areaFloor) || self.IsOnFloor())) {
-                self.events[MECHEVENT.JUMPPRESS].validate(self);
+                self.sm.mechEvents[STATETYPE.MOTION][MECHEVENT.JUMPPRESS].validate(self);
             } else if(!self.IsOnFloor()) { //Successfully reduced IsOnFloor == false with snap and cylinder collision but player still slides off some stuff. 
-                self.events[MECHEVENT.AIR].validate(self); //Might need to switch this to areaFloor and do !isOnFloor gravity in walk/idle etc instead?
+                self.sm.mechEvents[STATETYPE.MOTION][MECHEVENT.AIR].validate(self); //Might need to switch this to areaFloor and do !isOnFloor gravity in walk/idle etc instead?
                 //Must apply gravity if !isonfloor either way because snap needs you to be on the floor.
             } else if(self.IsOnFloor()) { //Unimportant. Test to make sure it doesn't break stuff but it shouldn't.
                 self.move.velocity = new Vector3(self.move.velocity.x, 0, self.move.velocity.z);

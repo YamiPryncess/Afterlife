@@ -14,6 +14,7 @@ public class Navigate : State {
         reality = self.reality;
         targetOrigin = reality.target.GlobalTransform.origin;
         myOrigin = self.GlobalTransform.origin;
+        animator.Play("Walk");
     }
 
     public void refreshNav() {
@@ -72,7 +73,7 @@ public class Navigate : State {
         if(reality.target == null) {
             fail();
         } else {
-            if(self.GlobalTransform.origin.DistanceTo(reality.target.GlobalTransform.origin) < 3) {//Reached target
+            if(self.GlobalTransform.origin.DistanceTo(reality.target.GlobalTransform.origin) < 1) {//Reached target
                 succeed();
             } else {
                 bool reached = reachedPoint();
@@ -86,7 +87,7 @@ public class Navigate : State {
                         reality.pathInx++;
                 }
                 //GD.Print(reality.path.Length, " ", reality.pathInx);
-                self.move.updateDirection(pointDir() * 16);
+                self.move.updateDirection(pointDir() * 10);
             }    
             navDelta = count(navDelta, deltaLimit);
         }
@@ -94,6 +95,7 @@ public class Navigate : State {
     public override void Exit() {
         reality.path = null;
         reality.pathInx = 0;
+        animator.Play("Idle");
         //reality.target = null; //Not sure how I'll handle target management yet.
         base.Exit();
     }

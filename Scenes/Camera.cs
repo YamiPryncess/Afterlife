@@ -9,6 +9,7 @@ public class Camera : Godot.Camera {
     public Vector3 offset {set; get;}
     public Vector3 targetPos {set; get;}
     public Meeting meeting {set; get;}
+    float minCamDist = 4.2f;
     public float slope {set; get;} //Largest distance of multiple players
 
     // Called when the node enters the scene tree for the first time.
@@ -24,7 +25,6 @@ public class Camera : Godot.Camera {
         if(verticalOrbit > Mathf.Deg2Rad(80f)) verticalOrbit = Mathf.Deg2Rad(80f);
         if(verticalOrbit < Mathf.Deg2Rad(10f)) verticalOrbit = Mathf.Deg2Rad(10f);
         float vertOrbDeg = Mathf.Rad2Deg(verticalOrbit);
-        float minOffset = 12;
         float tooCloseAngle = 60;
         float pushCamera = Mathf.Deg2Rad(tooCloseAngle); //Forgot what this is
 
@@ -32,10 +32,10 @@ public class Camera : Godot.Camera {
         slope = meeting.largestDist;//largest distance between 2 players
         //GD.Print(targetDist);
         offset = new Vector3(0, 0, -1).Rotated(Vector3.Right, verticalOrbit) * 
-                                                (slope > minOffset ?
+                                                (slope > minCamDist ?
                                                 slope * (vertOrbDeg > tooCloseAngle ? 
                                                 verticalOrbit : pushCamera) 
-                                                : minOffset);
+                                                : minCamDist);
         Vector3 cameraPos = targetPos + offset.Rotated(Vector3.Up, curRotation);
         
         LookAtFromPosition(cameraPos, targetPos, Vector3.Up);

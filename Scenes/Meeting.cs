@@ -22,6 +22,7 @@ public class Meeting : Spatial {
     public Vector3 playerCenter() {
         Vector3 accumilator = new Vector3();
         for(int i = 0; i < players.Count; i++) {
+            if(IsInstanceValid(players[i]))
             accumilator += players[i]
                 .GetNode<Spatial>("Target").GlobalTransform.origin;
         }

@@ -1,19 +1,25 @@
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 
 public class StateMachine {
     public STAGE stage {set; get;}
-    public State currentState {set; get;}
-    public State nextState {set; get;}
+    public Dictionary<STATETYPE, State> activeStates;
+    public State aiState;
+    public Dictionary<STATETYPE, Dictionary<MECHEVENT, Event>> mechEvents {set; get;}
     public Spirit self {set; get;}
     public AnimationPlayer animator {set; get;}
-    public bool finalFrame {set; get;} = false;
-    public bool enforceUpdate {set; get;} = false;
     public Dictionary<STATE, int> priority {set; get;} //strictly for input priority
-    public StateMachine(Spirit _self) {
+    public StateMachine(Spirit _self, Dictionary<STATETYPE, Dictionary<MECHEVENT,Event>> _mechEvents) {
         self = _self;
-        animator = self.GetNode<AnimationPlayer>("Animator");
-        currentState = new Walk(this);
+        mechEvents = _mechEvents;
+        animator = self.GetNode<AnimationPlayer>("Goxidette/AnimationPlayer");
+        //animator = self.GetNode<AnimationPlayer>("Animator");
+        activeStates = new Dictionary<STATETYPE, State>();
+        activeStates[STATETYPE.MOTION] = new Walk(this);
+        activeStates[STATETYPE.ACTION] = new Reserved(this);
+        activeStates[STATETYPE.PHASE] = new Physical(this);
+        aiState = new Reserved(this);
 
         priority = new Dictionary<STATE, int>();
         //priority.Add(STATE.IDLE, 0);
@@ -33,11 +39,11 @@ public class StateMachine {
     Priority- Some inputs will take priority over others. So if an early input has priority over later inputs, all later inputs will be denied.
     Enforce Update- Is set by animationPlayer atm & denies exit into a new state thus allowing for a loose buffer period for new incoming States.
     nextState- newStates will be buffered in the "nextState" var regardless of whether the "currentState.stage" exits or not.*/
-    public void setNextState(State newState) { 
-        if(nextState == null || isPrioric(newState, nextState)) {
-            if(!enforceUpdate) currentState.stage = STAGE.EXIT; 
-            nextState = newState;   
-            //Can set a buffer frame counter here. Add delta to it and when it's greater than .166667 ms                          
+    public void setNextState(State newState, State activeState, STATETYPE stateType = STATETYPE.AI) {
+        if(activeState.next == null || isPrioric(newState, activeState.next)) {
+        if(!activeState.locked && activeState.stage != STAGE.ENTER) activeState.stage = STAGE.EXIT; 
+        activeState.next = newState;
+        //Can set a buffer frame counter here. Add delta to it and when it's greater than .166667 ms                          
         }
     }
     /*isPrioric()
@@ -48,15 +54,15 @@ public class StateMachine {
     Only works when comparing against something that is currently buffered.
     If nothing is buffered, ignore priority and buffer the newState!
     */
-    public bool isPrioric(State newState, State nextState) {
-        if((priority.ContainsKey(newState.name) && priority.ContainsKey(nextState.name)) 
-            && (priority[newState.name] > priority[nextState.name])) {
+    public bool isPrioric(State newState, State queuedState) {
+        if((priority.ContainsKey(newState.name) && priority.ContainsKey(queuedState.name)) 
+            && (priority[newState.name] > priority[queuedState.name])) {
             return true;                                       
         }
         return false;
     }
     public State enumToState(STATE newState) {
-        switch (newState){
+        switch (newState) {
             case STATE.WALK:
                 return new Walk(this);
             case STATE.WAIT:
@@ -91,43 +97,108 @@ public class StateMachine {
                 return new Navigate(this);
             case STATE.NULL:
                 return null;
-            default: 
+            default:
                 return null;
       }
     }
     public void process(float delta) {
+        Dictionary<STATETYPE, State> newStates = new Dictionary<STATETYPE, State>();
+        foreach(KeyValuePair<STATETYPE, State> state in activeStates){
+            // if(self.player == 1 && state.Key == STATETYPE.ACTION) GD.Print("Current:", state.Value.name, 
+            // "| Stage: ", state.Value.stage, " Attack: ", self.GetNode<Catalyst>("Catalyst").state);
+            //GD.Print("Running: ", state.Value.stateType, " Current:", state.Value.name, " Next:", state.Value.next.name);
+            newStates.Add(state.Key, frameTransitions(state.Value, state.Key, delta));
+        }
+        activeStates = newStates;
+    }
+    public void aiProcess(float delta) {
+        aiState = frameTransitions(aiState, STATETYPE.AI, delta);
+    }
+    public State frameTransitions(State state, STATETYPE type, float delta) {
         //currentState.process() runs either (1)enter->update, (2)update, (3)update->exit, or (4)exit alone.
-        switch(currentState.exited) {
-            case true: //if true then Previous frame (3) both updated and exited.
-                restate();
-                currentState.process(delta); //(1) updating a new state
-            break;
-            case false:
-                if(currentState.stage == STAGE.EXIT) {
-                    currentState.process(delta);//(4)exiting currentState without update.
-                    if(currentState.exited) {
-                        restate();
-                        currentState.process(delta);//(1)make sure 1 update still happens for the frame.
-                    }
-                } else {
-                    currentState.process(delta); //(1)/(2)/(3) updates alone or with entry or exit. 
+        if(state.exited) {//if true then Previous frame (3) both updated and exited.
+                state = restate(state, type);
+                state.process(delta, type); //(1) updating a new state
+        } else if(!state.exited && state.stage == STAGE.EXIT) {
+            state.process(delta, type);//(4)exiting currentState without update.
+            if(state.exited) {//If it doesn't exit then don't restate. (Forgot why)
+                state = restate(state, type);
+                state.process(delta, type);//(1)make sure 1 update still happens for the frame.
+            }
+        } else if(!state.exited) {
+            state.process(delta, type); //(1)/(2)/(3) updates alone or with entry or exit. 
+        }
+        return state;
+    }
+    public State restate(State state, STATETYPE type) {
+        if(state.next == null) state.next = new Reserved(this); //Prevents error but bypasses state transition logic. Could I return; instead? Unsure.
+        return state.next;
+    }
+    //Auxiliary Event Methods
+    public void runEvent(MECHEVENT newEvent, STATETYPE stateType = STATETYPE.ALL) {
+        if(stateType == STATETYPE.ALL) {
+            foreach (KeyValuePair<STATETYPE, Dictionary<MECHEVENT, Event>> eventList in mechEvents) {
+                if(eventList.Value.ContainsKey(newEvent)) {
+                    eventList.Value[newEvent].validate(self);
                 }
-            break;
+            }
+        } else {
+            mechEvents[stateType][newEvent].validate(self);
         }
     }
-    public void restate() {
-        if(nextState == null) nextState = new Walk(this);
-        currentState = nextState;
-        nextState = null;
+    //Auxiliary State Methods
+    public bool nextIsTrue(STATETYPE stateType = STATETYPE.ALL) {
+        bool isTrue = false;
+        if(stateType == STATETYPE.ALL) {
+            foreach(KeyValuePair<STATETYPE, State> state in activeStates){
+                if(state.Value.next != null) {
+                    isTrue = true;
+                }
+            }
+        } else if(stateType == STATETYPE.AI && aiState.next != null) {
+            isTrue = true;
+        } else if (activeStates[stateType].next != null) {
+            isTrue = true;
+        }
+        return isTrue;
     }
-    public void cancel() { finalFrame = true; animator.Stop(true); }
+    public void statesLock(bool setTo, STATETYPE stateType = STATETYPE.ALL) {
+        if(stateType == STATETYPE.ALL) {
+            foreach(KeyValuePair<STATETYPE, State> state in activeStates){
+                state.Value.locked = setTo;    
+            }
+        } else if(stateType == STATETYPE.AI) {
+            aiState.locked = setTo;
+        } else {
+            activeStates[stateType].locked = setTo;
+        }
+    }
+    public bool framesZero(STATETYPE stateType = STATETYPE.ALL) {
+        bool isTrue = false;
+        if(stateType == STATETYPE.ALL) {
+            foreach(KeyValuePair<STATETYPE, State> state in activeStates){
+                if(state.Value.frames <= 0) {
+                    isTrue = true;
+                }
+            }
+        } else if(stateType == STATETYPE.AI && aiState.frames <= 0) {
+            isTrue = true;
+        } else if (activeStates[stateType].frames <= 0) {
+            isTrue = true;
+        }
+        return isTrue;
+    }
 }
 public enum STATE {
     NAVIGATE, NULL, WAIT,
     WALK, DASH, RUN,
     JUMP, DROP, LEAP,
-    STANCE, BREAK,
-    SNEAK, SLIDE,
+    STANCE, BREAK, PHYSICAL,
+    SNEAK, SLIDE, RESERVED,
     PHASE, FLOAT, SKIP, 
     ATTACK, ANY, AIR
+}
+
+public enum STATETYPE {
+    MOTION, PHASE, ACTION, ALL, ANY, AI
 }

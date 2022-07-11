@@ -11,10 +11,11 @@ Z:\Projects\Afterlife\.mono\temp\obj\Debug\Afterlife.csprojAssemblyReference.cac
 L:\Projects\GameDev\Afterlife\.mono\temp\bin\Debug\Afterlife.dll
 L:\Projects\GameDev\Afterlife\.mono\temp\bin\Debug\Afterlife.pdb
 L:\Projects\GameDev\Afterlife\.mono\temp\bin\Debug\Newtonsoft.Json.dll
-L:\Projects\GameDev\Afterlife\.mono\temp\obj\Debug\Afterlife.csprojAssemblyReference.cache
 L:\Projects\GameDev\Afterlife\.mono\temp\obj\Debug\Afterlife.AssemblyInfoInputs.cache
 L:\Projects\GameDev\Afterlife\.mono\temp\obj\Debug\Afterlife.AssemblyInfo.cs
 L:\Projects\GameDev\Afterlife\.mono\temp\obj\Debug\Afterlife.csproj.CoreCompileInputs.cache
 L:\Projects\GameDev\Afterlife\.mono\temp\obj\Debug\Afterlife.csproj.CopyComplete
 L:\Projects\GameDev\Afterlife\.mono\temp\obj\Debug\Afterlife.dll
 L:\Projects\GameDev\Afterlife\.mono\temp\obj\Debug\Afterlife.pdb
+L:\Projects\GameDev\Afterlife\.mono\temp\obj\Debug\Afterlife.csproj.AssemblyReference.cache
+L:\Projects\GameDev\Afterlife\.mono\temp\obj\Debug\Afterlife.GeneratedMSBuildEditorConfig.editorconfig

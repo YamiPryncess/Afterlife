@@ -13,8 +13,7 @@ public class Spirit : KinematicBody {
     public Movement move {set; get;}
     public MOVEMODE moveMode = MOVEMODE.SLIDE;
     [Export] public int player {set; get;} = -1;
-    public Dictionary<MECHEVENT, Event> events {set; get;} = 
-        new Dictionary<MECHEVENT, Event>();
+    [Export] public bool disable {set; get;} = false;
     public BTree bTree {set; get;}
     public Reality reality {set; get;}
     public Dictionary<BELIEF, bool> beliefs {set; get;} = new Dictionary<BELIEF, bool>();
@@ -24,7 +23,7 @@ public class Spirit : KinematicBody {
     public Area floor {set; get;}
     public override void _Ready() {
         master = GetNode<Master>("/root/Master");
-        sm = new StateMachine(this);
+        sm = new StateMachine(this, master.mechEvents);
         reality = new Reality();
         phaser = GetNode<Phaser>("Phaser");
         phaser.self = this;
@@ -32,10 +31,10 @@ public class Spirit : KinematicBody {
         hud = (Hud)GetTree().GetNodesInGroup("Huds")[player > -1 ? player - 1 : 1];
         stats = new Stats();
         move = new Movement(this);
-        snap = Vector3.Zero;
+        snap = Vector3.Down;
         
         if(isPlayer()) {
-            master.mechanics.Call("basics", this);
+            //master.mechanics.Call("basics", this);
             camera = GetNode<Camera>("../Camera");
         }
         else if(player == -1) {
@@ -54,6 +53,9 @@ public class Spirit : KinematicBody {
     }
     public override void _Process(float delta) {
         idleDelta = delta;
+        if(disable) {
+            return;
+        }
         if(stats.lifePoints <= 0) { QueueFree(); }
         if(isPlayer()) {
             preProcessState(delta);//Mutates controller variables like inputDir, also calls state change events
@@ -63,6 +65,9 @@ public class Spirit : KinematicBody {
         }
     }
     public override void _PhysicsProcess(float delta) {
+        if(disable) {
+            return;
+        }
         //if(player == 1) GD.Print(sm.currentState.name, " ", velocity);
         postProcessState(delta); //Mutates physics variables like Velocity, then resets controller and input variables
     }
@@ -87,12 +92,12 @@ public class Spirit : KinematicBody {
         //if(player == 1) GD.Print(sm.currentState.name, " ", move.modVelocity);
         //if(player == 1) GD.Print(move.velocity.y + move.gravity * delta);
         //if(player == 1 && GlobalTransform.origin.y > 2.45) GD.Print(GlobalTransform.origin.y);
-        move.velocity = MoveAndSlideWithSnap(new Vector3(move.pMoveDir.x, 
+        move.velocity = MoveAndSlide(new Vector3(move.pMoveDir.x, 
                         (move.velocity.y + move.modVelocity) + (move.gravity * delta), 
-                        move.pMoveDir.z), snap, Vector3.Up, true); 
+                        move.pMoveDir.z), Vector3.Up, true); 
         //Always moves but states like idle can manipulate it.
         //if(player == 1) GD.Print(sm.currentState.name, " ", move.velocity);
-        sm.currentState.physics = true;
+        sm.activeStates[STATETYPE.MOTION].physicsCycledOnce = true;
         move.rotate(delta);
         resetPhysics();
     }
@@ -107,23 +112,25 @@ public class Spirit : KinematicBody {
         }
     }
     public void endAnimator(float delta) {
-        if(!sm.animator.IsPlaying() && sm.nextState == null && animBool == true) {
-            events[MECHEVENT.ANIMEND].validate(this);
+        if(!sm.animator.IsPlaying() && !sm.nextIsTrue() && animBool == true) {
+            sm.runEvent(MECHEVENT.ANIMEND);
             animBool = false;
         } else {
             animBool = true;
         }
     }
     public void final_frame() {
-        sm.finalFrame = true;
+        sm.statesLock(false, STATETYPE.ACTION);
     }
     public void enforce_anim() {
-        sm.enforceUpdate = true;
+        sm.statesLock(true, STATETYPE.ACTION);
     }
     public void attack(float delta) {
         if(Input.IsActionJustPressed(pad("attack"))) {
             //GD.Print("Button has been pressed!");
-            events[MECHEVENT.ATTACKPRESS].validate(this);
+            //GD.Print(sm.mechEvents.ContainsKey(STATETYPE.ACTION));
+            //GD.Print(sm.mechEvents[STATETYPE.ACTION].ContainsKey(MECHEVENT.ATTACKPRESS));
+            sm.mechEvents[STATETYPE.ACTION][MECHEVENT.ATTACKPRESS].validate(this);
         }
     }
     public void hurt() {

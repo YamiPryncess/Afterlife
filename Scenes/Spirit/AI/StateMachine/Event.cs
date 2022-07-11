@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System;
 public class Event {
     //Events switches the states, not state code.
     //So state code doesn't need to specify anything about 
@@ -12,29 +13,30 @@ public class Event {
     //for itself if it wants to allow that type of event & process it.
     public MECHEVENT name {set; get;} = MECHEVENT.NONE;
     public EVENTTYPE eventType {set; get;}
+    public STATETYPE stateType {set; get;}
     public Dictionary<STATE, STATE> condition {set; get;} = 
     new Dictionary<STATE, STATE>(); //Only accessed by mechanics, nothing else.
-    public Event(MECHEVENT _mechEvent, Dictionary<STATE, STATE> _condition) {
+    public Event(MECHEVENT _mechEvent, STATETYPE _stateType) {
         name = _mechEvent;
-        condition = _condition;
+        stateType = _stateType;
+        condition = new Dictionary<STATE, STATE>();
     }
     public void addCondition(STATE curCondition, STATE nextTransition) {
         condition.Add(curCondition, nextTransition);
     }
     public void validate(Spirit player) {
         StateMachine sm = player.sm;
-        STATE curStateEnum = sm.currentState.name;
+        STATE curStateEnum = sm.activeStates[stateType].name;
         if(condition.ContainsKey(curStateEnum)
             && condition[curStateEnum] != STATE.NULL) { //If transitioning to same state, NULL stops it.
             State newState = sm.enumToState(condition[curStateEnum]);
             if(newState != null) {
                 //GD.Print("New State:", " ", name);
-                sm.setNextState(newState);
+                sm.setNextState(newState, sm.activeStates[stateType], stateType);
             }//In the future states may also have subordinate states.
         }//Attack for example may have move and jump as subordinates in its class.
     }//They can do side processes and be called by validate() too.
 }
-
 public enum EVENTTYPE {
     QUEUE, IMMEDIATE, SIMULTANEOUS
 }

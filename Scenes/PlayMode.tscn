@@ -1,0 +1,705 @@
+[gd_scene load_steps=115 format=2]
+
+[ext_resource path="res://Scenes/Meeting.cs" type="Script" id=1]
+[ext_resource path="res://Scenes/Camera.cs" type="Script" id=2]
+[ext_resource path="res://Assets/KyGraveyard/gravestoneFlatOpen.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Assets/Levels/FirstBossRoom.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Assets/KyGraveyard/gravestoneBevel.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Assets/KyFantasyTown/stairsStone.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Assets/KyFantasyTown/stairsWoodHandrail.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Assets/KyGraveyard/fenceDamaged.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Assets/KyGraveyard/gravestoneCrossLarge.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Assets/KyGraveyard/brickWall.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Scenes/Hud.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Assets/KyFantasyTown/stairsWood.tscn" type="PackedScene" id=12]
+[ext_resource path="res://Assets/KyRetroMedieval/floor_stepsCornerInner.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Assets/KyRetroMedieval/floor_steps.tscn" type="PackedScene" id=14]
+[ext_resource path="res://Models/LowPolyToBlend.glb" type="PackedScene" id=15]
+[ext_resource path="res://Assets/KyFantasyTown/stairsStoneHandrail.tscn" type="PackedScene" id=16]
+[ext_resource path="res://Assets/KyRetroMedieval/floor_stairsCornerOuter.tscn" type="PackedScene" id=17]
+[ext_resource path="res://Assets/KyGraveyard/detailChalice.tscn" type="PackedScene" id=18]
+[ext_resource path="res://Assets/KyFantasyTown/stairsStoneRound.tscn" type="PackedScene" id=19]
+[ext_resource path="res://Assets/KyFantasyTown/stairsStoneCorner.tscn" type="PackedScene" id=20]
+[ext_resource path="res://Assets/Levels/Castle.tscn" type="PackedScene" id=21]
+[ext_resource path="res://Assets/Levels/DreamGothHouse.tscn" type="PackedScene" id=22]
+[ext_resource path="res://Assets/KyGraveyard/cross.tscn" type="PackedScene" id=23]
+[ext_resource path="res://Assets/KyRetroMedieval/floor_stairsCornerInner.tscn" type="PackedScene" id=24]
+[ext_resource path="res://Assets/KyGraveyard/debris.tscn" type="PackedScene" id=25]
+[ext_resource path="res://Assets/KyGraveyard/grave.tscn" type="PackedScene" id=26]
+[ext_resource path="res://Scenes/Spirit/Spirit.tscn" type="PackedScene" id=27]
+[ext_resource path="res://Assets/KyGraveyard/gravestoneBroken.tscn" type="PackedScene" id=28]
+[ext_resource path="res://Assets/KyGraveyard/graveBorder.tscn" type="PackedScene" id=29]
+[ext_resource path="res://Assets/KyGraveyard/gravestoneFlat.tscn" type="PackedScene" id=30]
+[ext_resource path="res://Assets/KyGraveyard/crossWood.tscn" type="PackedScene" id=31]
+[ext_resource path="res://Assets/KyRetroMedieval/floor_stairs.tscn" type="PackedScene" id=32]
+[ext_resource path="res://Assets/KyGraveyard/gravestoneDebris.tscn" type="PackedScene" id=33]
+[ext_resource path="res://Assets/KyGraveyard/coffinOld.tscn" type="PackedScene" id=34]
+[ext_resource path="res://Assets/KyGraveyard/fence.tscn" type="PackedScene" id=35]
+[ext_resource path="res://Assets/KyGraveyard/fireBasket.tscn" type="PackedScene" id=36]
+[ext_resource path="res://Assets/KyGraveyard/road.tscn" type="PackedScene" id=37]
+[ext_resource path="res://Assets/KyGraveyard/pineCrooked.tscn" type="PackedScene" id=38]
+[ext_resource path="res://Assets/KyGraveyard/pumpkinCarved.tscn" type="PackedScene" id=39]
+[ext_resource path="res://Assets/KyGraveyard/gravestoneWide.tscn" type="PackedScene" id=40]
+[ext_resource path="res://Assets/KyGraveyard/ironFence.tscn" type="PackedScene" id=41]
+[ext_resource path="res://Assets/KyRetroMedieval/floor_stepsCornerOuter.tscn" type="PackedScene" id=42]
+[ext_resource path="res://Assets/KyGraveyard/crossColumn.tscn" type="PackedScene" id=43]
+[ext_resource path="res://Assets/KyGraveyard/skeleton.tscn" type="PackedScene" id=44]
+[ext_resource path="res://Assets/KyGraveyard/trunk.tscn" type="PackedScene" id=45]
+[ext_resource path="res://Assets/KyGraveyard/lightpostDouble.tscn" type="PackedScene" id=46]
+[ext_resource path="res://Assets/KyGraveyard/stoneWall.tscn" type="PackedScene" id=47]
+[ext_resource path="res://Assets/KyGraveyard/rocks.tscn" type="PackedScene" id=48]
+[ext_resource path="res://Assets/KyGraveyard/pillarSquare.tscn" type="PackedScene" id=49]
+[ext_resource path="res://Assets/KyGraveyard/lanternCandle.tscn" type="PackedScene" id=50]
+[ext_resource path="res://Assets/KyGraveyard/stoneWallCurve.tscn" type="PackedScene" id=51]
+[ext_resource path="res://Assets/KyGraveyard/pumpkinTallCarved.tscn" type="PackedScene" id=52]
+[ext_resource path="res://Assets/KyGraveyard/lanternGlass.tscn" type="PackedScene" id=53]
+[ext_resource path="res://Assets/KyGraveyard/stoneWallDamaged.tscn" type="PackedScene" id=54]
+[ext_resource path="res://Assets/KyGraveyard/ironFenceCurve.tscn" type="PackedScene" id=55]
+[ext_resource path="res://Assets/KyGraveyard/trunkLong.tscn" type="PackedScene" id=56]
+[ext_resource path="res://Assets/KyGraveyard/pillarSmall.tscn" type="PackedScene" id=57]
+[ext_resource path="res://Assets/KyGraveyard/gravestoneRoof.tscn" type="PackedScene" id=58]
+[ext_resource path="res://Assets/KyGraveyard/gravestoneRound.tscn" type="PackedScene" id=59]
+[ext_resource path="res://Assets/KyGraveyard/benchDamaged.tscn" type="PackedScene" id=60]
+[ext_resource path="res://Assets/KyGraveyard/gravestoneCross.tscn" type="PackedScene" id=61]
+[ext_resource path="res://Assets/KyGraveyard/fenceGate.tscn" type="PackedScene" id=62]
+[ext_resource path="res://Assets/KyGraveyard/rocksTall.tscn" type="PackedScene" id=63]
+[ext_resource path="res://Assets/KyGraveyard/pumpkin.tscn" type="PackedScene" id=64]
+[ext_resource path="res://Assets/KyGraveyard/pillarLarge.tscn" type="PackedScene" id=65]
+[ext_resource path="res://Assets/KyGraveyard/ironFenceDamaged.tscn" type="PackedScene" id=66]
+[ext_resource path="res://Assets/KyGraveyard/shovelDirt.tscn" type="PackedScene" id=67]
+[ext_resource path="res://Assets/KyGraveyard/ironFenceBorderGate.tscn" type="PackedScene" id=68]
+[ext_resource path="res://Assets/KyGraveyard/lightpostSingle.tscn" type="PackedScene" id=69]
+[ext_resource path="res://Assets/KyGraveyard/ghost.tscn" type="PackedScene" id=70]
+[ext_resource path="res://Assets/KyGraveyard/columnLarge.tscn" type="PackedScene" id=71]
+[ext_resource path="res://Assets/KyGraveyard/altarStone.tscn" type="PackedScene" id=72]
+[ext_resource path="res://Assets/KyGraveyard/ironFenceBorder.tscn" type="PackedScene" id=73]
+[ext_resource path="res://Assets/KyGraveyard/pillarObelisk.tscn" type="PackedScene" id=74]
+[ext_resource path="res://Assets/KyGraveyard/shovel.tscn" type="PackedScene" id=75]
+[ext_resource path="res://Assets/KyGraveyard/ironFenceBar.tscn" type="PackedScene" id=76]
+[ext_resource path="res://Assets/KyGraveyard/digger.tscn" type="PackedScene" id=77]
+[ext_resource path="res://Assets/KyGraveyard/zombie.tscn" type="PackedScene" id=78]
+[ext_resource path="res://Assets/KyGraveyard/pumpkinTall.tscn" type="PackedScene" id=79]
+[ext_resource path="res://Assets/KyGraveyard/urn.tscn" type="PackedScene" id=80]
+[ext_resource path="res://Assets/KyGraveyard/pine.tscn" type="PackedScene" id=81]
+[ext_resource path="res://Assets/KyGraveyard/vampire.tscn" type="PackedScene" id=82]
+[ext_resource path="res://Assets/KyGraveyard/lightpostAll.tscn" type="PackedScene" id=83]
+[ext_resource path="res://Assets/KyGraveyard/stoneWallColumn.tscn" type="PackedScene" id=84]
+[ext_resource path="res://Assets/KyGraveyard/brickWallCurve.tscn" type="PackedScene" id=85]
+[ext_resource path="res://Assets/KyGraveyard/coffin.tscn" type="PackedScene" id=86]
+[ext_resource path="res://Assets/KyGraveyard/ironFenceBorderCurve.tscn" type="PackedScene" id=87]
+[ext_resource path="res://Assets/KyGraveyard/ironFenceBorderColumn.tscn" type="PackedScene" id=88]
+[ext_resource path="res://Assets/KyGraveyard/detailPlate.tscn" type="PackedScene" id=89]
+[ext_resource path="res://Assets/KyGraveyard/detailBowl.tscn" type="PackedScene" id=90]
+[ext_resource path="res://Assets/KyGraveyard/bench.tscn" type="PackedScene" id=91]
+[ext_resource path="res://Assets/KyGraveyard/crypt.tscn" type="PackedScene" id=92]
+[ext_resource path="res://Assets/KyGraveyard/borderPillar.tscn" type="PackedScene" id=93]
+[ext_resource path="res://Assets/KyGraveyard/gravestoneDecorative.tscn" type="PackedScene" id=94]
+[ext_resource path="res://Assets/KyGraveyard/debrisWood.tscn" type="PackedScene" id=95]
+[ext_resource path="res://addons/zylann.scatter/scatter3d.gd" type="Script" id=96]
+[ext_resource path="res://Scenes/PlayMode.cs" type="Script" id=97]
+
+[sub_resource type="NavigationMesh" id=18]
+vertices = PoolVector3Array( -81.125, 0.415102, 56.6379, -81.125, 0.415102, 64.7379, -71.225, 0.415102, 64.7379, -71.225, 0.415102, -64.8621, -81.125, 0.415102, -64.8621, -81.125, 0.415102, -56.7621, 70.975, 0.415102, 64.7379, 81.175, 0.415102, 64.7379, 81.175, 0.415102, 56.6379, 81.175, 0.415102, -56.7621, 81.175, 0.415102, -64.8621, 70.975, 0.415102, -64.8621, -81.125, 0.415102, 48.5379, -81.125, 0.415102, 56.6379, -71.225, 0.415102, 64.7379, -71.225, 0.415102, -64.8621, -81.125, 0.415102, -56.7621, -81.125, 0.415102, -48.6621, 70.975, 0.415102, 64.7379, 81.175, 0.415102, 56.6379, 81.175, 0.415102, 48.5379, 81.175, 0.415102, -48.6621, 81.175, 0.415102, -56.7621, 70.975, 0.415102, -64.8621, -81.125, 0.415102, 48.5379, -71.225, 0.415102, 64.7379, -61.025, 0.415102, 64.7379, -81.125, 0.415102, 40.4379, -61.025, 0.415102, -64.8621, -71.225, 0.415102, -64.8621, -81.125, 0.415102, -48.6621, -81.125, 0.415102, -40.5621, 60.775, 0.415102, 64.7379, 70.975, 0.415102, 64.7379, 81.175, 0.415102, 48.5379, 81.175, 0.415102, 40.4379, 81.175, 0.415102, -48.6621, 70.975, 0.415102, -64.8621, 60.775, 0.415102, -64.8621, 81.175, 0.415102, -40.5621, -81.125, 0.415102, -0.0621033, -20.525, 0.415102, 64.7379, -10.325, 0.415102, 64.7379, 81.175, 0.415102, -8.1621, 81.175, 0.415102, -16.2621, 40.375, 0.415102, -64.8621, 30.175, 0.415102, -64.8621, 9.77501, 0.415102, 64.7379, 19.975, 0.415102, 64.7379, 81.175, 0.415102, -0.0621033, -0.124992, 0.415102, -64.8621, -10.325, 0.415102, -64.8621, -81.125, 0.415102, -0.0621033, -81.125, 0.415102, 32.3379, -81.125, 0.415102, 40.4379, -61.025, 0.415102, 64.7379, -61.025, 0.415102, -64.8621, -81.125, 0.415102, -40.5621, -81.125, 0.415102, -32.4621, 60.775, 0.415102, 64.7379, 81.175, 0.415102, 40.4379, 81.175, 0.415102, 32.3379, 81.175, 0.415102, -32.4621, 81.175, 0.415102, -40.5621, 60.775, 0.415102, -64.8621, -81.125, 0.415102, 32.3379, -61.025, 0.415102, 64.7379, -50.825, 0.415102, 64.7379, -81.125, 0.415102, 24.2379, -50.825, 0.415102, -64.8621, -61.025, 0.415102, -64.8621, -81.125, 0.415102, -32.4621, -81.125, 0.415102, -24.3621, 50.575, 0.415102, 64.7379, 60.775, 0.415102, 64.7379, 81.175, 0.415102, 32.3379, 81.175, 0.415102, 24.2379, 81.175, 0.415102, -32.4621, 60.775, 0.415102, -64.8621, 50.575, 0.415102, -64.8621, 81.175, 0.415102, -24.3621, -81.125, 0.415102, -0.0621033, -81.125, 0.415102, 8.0379, -30.725, 0.415102, 64.7379, -20.525, 0.415102, 64.7379, -10.325, 0.415102, -64.8621, -20.525, 0.415102, -64.8621, -81.125, 0.415102, -0.0621033, 30.175, 0.415102, 64.7379, 81.175, 0.415102, 8.0379, 81.175, 0.415102, -0.0621033, 19.975, 0.415102, 64.7379, -30.725, 0.415102, -64.8621, -81.125, 0.415102, -8.1621, -81.125, 0.415102, -0.0621033, -20.525, 0.415102, -64.8621, -81.125, 0.415102, 16.1379, -81.125, 0.415102, 24.2379, -50.825, 0.415102, 64.7379, -40.625, 0.415102, 64.7379, -50.825, 0.415102, -64.8621, -81.125, 0.415102, -24.3621, -81.125, 0.415102, -16.2621, -40.625, 0.415102, -64.8621, 50.575, 0.415102, 64.7379, 81.175, 0.415102, 24.2379, 81.175, 0.415102, 16.1379, 40.375, 0.415102, 64.7379, 81.175, 0.415102, -16.2621, 81.175, 0.415102, -24.3621, 50.575, 0.415102, -64.8621, 40.375, 0.415102, -64.8621, -81.125, 0.415102, -0.0621033, -10.325, 0.415102, 64.7379, -0.124992, 0.415102, 64.7379, 81.175, 0.415102, -0.0621033, 81.175, 0.415102, -8.1621, 30.175, 0.415102, -64.8621, 19.975, 0.415102, -64.8621, -0.124992, 0.415102, -64.8621, -81.125, 0.415102, -0.0621033, -0.124992, 0.415102, 64.7379, 9.77501, 0.415102, 64.7379, 81.175, 0.415102, -0.0621033, 9.77501, 0.415102, -64.8621, 81.175, 0.415102, -0.0621033, 19.975, 0.415102, -64.8621, 9.77501, 0.415102, -64.8621, -81.125, 0.415102, 8.0379, -81.125, 0.415102, 16.1379, -40.625, 0.415102, 64.7379, -30.725, 0.415102, 64.7379, -40.625, 0.415102, -64.8621, -81.125, 0.415102, -16.2621, -81.125, 0.415102, -8.1621, -30.725, 0.415102, -64.8621, 40.375, 0.415102, 64.7379, 81.175, 0.415102, 16.1379, 81.175, 0.415102, 8.0379, 30.175, 0.415102, 64.7379 )
+polygons = [ PoolIntArray( 2, 1, 0 ), PoolIntArray( 5, 4, 3 ), PoolIntArray( 8, 7, 6 ), PoolIntArray( 9, 11, 10 ), PoolIntArray( 14, 13, 12 ), PoolIntArray( 17, 16, 15 ), PoolIntArray( 20, 19, 18 ), PoolIntArray( 23, 22, 21 ), PoolIntArray( 24, 27, 25 ), PoolIntArray( 25, 27, 26 ), PoolIntArray( 30, 29, 31 ), PoolIntArray( 31, 29, 28 ), PoolIntArray( 34, 33, 35 ), PoolIntArray( 35, 33, 32 ), PoolIntArray( 36, 39, 37 ), PoolIntArray( 37, 39, 38 ), PoolIntArray( 42, 41, 40 ), PoolIntArray( 44, 43, 45 ), PoolIntArray( 45, 43, 46 ), PoolIntArray( 49, 48, 47 ), PoolIntArray( 52, 51, 50 ), PoolIntArray( 55, 54, 53 ), PoolIntArray( 56, 58, 57 ), PoolIntArray( 61, 60, 59 ), PoolIntArray( 64, 63, 62 ), PoolIntArray( 65, 68, 66 ), PoolIntArray( 66, 68, 67 ), PoolIntArray( 71, 70, 72 ), PoolIntArray( 72, 70, 69 ), PoolIntArray( 75, 74, 76 ), PoolIntArray( 76, 74, 73 ), PoolIntArray( 77, 80, 78 ), PoolIntArray( 78, 80, 79 ), PoolIntArray( 82, 81, 83 ), PoolIntArray( 83, 81, 84 ), PoolIntArray( 87, 86, 85 ), PoolIntArray( 89, 88, 90 ), PoolIntArray( 90, 88, 91 ), PoolIntArray( 93, 92, 94 ), PoolIntArray( 94, 92, 95 ), PoolIntArray( 97, 96, 98 ), PoolIntArray( 98, 96, 99 ), PoolIntArray( 101, 100, 102 ), PoolIntArray( 102, 100, 103 ), PoolIntArray( 105, 104, 106 ), PoolIntArray( 106, 104, 107 ), PoolIntArray( 109, 108, 110 ), PoolIntArray( 110, 108, 111 ), PoolIntArray( 114, 113, 112 ), PoolIntArray( 116, 115, 117 ), PoolIntArray( 117, 115, 118 ), PoolIntArray( 124, 123, 119 ), PoolIntArray( 119, 123, 122 ), PoolIntArray( 119, 122, 121 ), PoolIntArray( 119, 121, 120 ), PoolIntArray( 127, 126, 125 ), PoolIntArray( 129, 128, 130 ), PoolIntArray( 130, 128, 131 ), PoolIntArray( 133, 132, 134 ), PoolIntArray( 134, 132, 135 ), PoolIntArray( 137, 136, 138 ), PoolIntArray( 138, 136, 139 ) ]
+agent/radius = 1.0
+
+[sub_resource type="CubeMesh" id=2]
+
+[sub_resource type="Skin" id=17]
+
+[sub_resource type="ConcavePolygonShape" id=4]
+data = PoolVector3Array( -1, 1, 1, 1, 1, 1, -1, -1, 1, 1, 1, 1, 1, -1, 1, -1, -1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, 1, 1, 1, 1, 1, -1, 1, -1, 1, 1, 1, -1, 1, -1, -1, 1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, 1, -1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, -1, -1, -1, 1, 1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, -1 )
+
+[sub_resource type="CubeMesh" id=5]
+size = Vector3( 0.05, 1, 0.05 )
+
+[sub_resource type="SpatialMaterial" id=6]
+albedo_color = Color( 1, 0, 0, 1 )
+
+[sub_resource type="ConvexPolygonShape" id=7]
+points = PoolVector3Array( -0.025, 0.5, 0.025, 0.025, 0.5, -0.025, 0.025, 0.5, 0.025, -0.025, 0.5, -0.025, -0.025, -0.5, 0.025, 0.025, -0.5, -0.025, 0.025, -0.5, 0.025, -0.025, -0.5, -0.025, 0.025, 0.5, 0.025, -0.025, 0.5, -0.025, 0.025, 0.5, -0.025, -0.025, 0.5, 0.025, 0.025, -0.5, 0.025, -0.025, -0.5, -0.025, 0.025, -0.5, -0.025, -0.025, -0.5, 0.025, 0.025, 0.5, 0.025, -0.025, -0.5, 0.025, -0.025, 0.5, 0.025, 0.025, -0.5, 0.025, 0.025, 0.5, -0.025, -0.025, -0.5, -0.025, -0.025, 0.5, -0.025, 0.025, -0.5, -0.025 )
+
+[sub_resource type="SpatialMaterial" id=8]
+albedo_color = Color( 1, 0, 0, 1 )
+
+[sub_resource type="ConvexPolygonShape" id=9]
+points = PoolVector3Array( -0.025, 0.5, 0.025, 0.025, 0.5, -0.025, 0.025, 0.5, 0.025, -0.025, 0.5, -0.025, -0.025, -0.5, 0.025, 0.025, -0.5, -0.025, 0.025, -0.5, 0.025, -0.025, -0.5, -0.025, 0.025, 0.5, 0.025, -0.025, 0.5, -0.025, 0.025, 0.5, -0.025, -0.025, 0.5, 0.025, 0.025, -0.5, 0.025, -0.025, -0.5, -0.025, 0.025, -0.5, -0.025, -0.025, -0.5, 0.025, 0.025, 0.5, 0.025, -0.025, -0.5, 0.025, -0.025, 0.5, 0.025, 0.025, -0.5, 0.025, 0.025, 0.5, -0.025, -0.025, -0.5, -0.025, -0.025, 0.5, -0.025, 0.025, -0.5, -0.025 )
+
+[sub_resource type="SpatialMaterial" id=10]
+albedo_color = Color( 1, 0, 0, 1 )
+
+[sub_resource type="ConvexPolygonShape" id=11]
+points = PoolVector3Array( -0.025, 0.5, 0.025, 0.025, 0.5, -0.025, 0.025, 0.5, 0.025, -0.025, 0.5, -0.025, -0.025, -0.5, 0.025, 0.025, -0.5, -0.025, 0.025, -0.5, 0.025, -0.025, -0.5, -0.025, 0.025, 0.5, 0.025, -0.025, 0.5, -0.025, 0.025, 0.5, -0.025, -0.025, 0.5, 0.025, 0.025, -0.5, 0.025, -0.025, -0.5, -0.025, 0.025, -0.5, -0.025, -0.025, -0.5, 0.025, 0.025, 0.5, 0.025, -0.025, -0.5, 0.025, -0.025, 0.5, 0.025, 0.025, -0.5, 0.025, 0.025, 0.5, -0.025, -0.025, -0.5, -0.025, -0.025, 0.5, -0.025, 0.025, -0.5, -0.025 )
+
+[sub_resource type="CubeMesh" id=12]
+size = Vector3( 5, 5, 5 )
+
+[sub_resource type="SpatialMaterial" id=13]
+albedo_color = Color( 1, 0, 0, 1 )
+
+[sub_resource type="ConcavePolygonShape" id=14]
+data = PoolVector3Array( -2.5, 2.5, 2.5, 2.5, 2.5, 2.5, -2.5, -2.5, 2.5, 2.5, 2.5, 2.5, 2.5, -2.5, 2.5, -2.5, -2.5, 2.5, 2.5, 2.5, -2.5, -2.5, 2.5, -2.5, 2.5, -2.5, -2.5, -2.5, 2.5, -2.5, -2.5, -2.5, -2.5, 2.5, -2.5, -2.5, 2.5, 2.5, 2.5, 2.5, 2.5, -2.5, 2.5, -2.5, 2.5, 2.5, 2.5, -2.5, 2.5, -2.5, -2.5, 2.5, -2.5, 2.5, -2.5, 2.5, -2.5, -2.5, 2.5, 2.5, -2.5, -2.5, -2.5, -2.5, 2.5, 2.5, -2.5, -2.5, 2.5, -2.5, -2.5, -2.5, 2.5, 2.5, 2.5, -2.5, 2.5, 2.5, 2.5, 2.5, -2.5, -2.5, 2.5, 2.5, -2.5, 2.5, -2.5, 2.5, 2.5, -2.5, -2.5, -2.5, 2.5, 2.5, -2.5, 2.5, -2.5, -2.5, -2.5, 2.5, -2.5, 2.5, 2.5, -2.5, -2.5, -2.5, -2.5, -2.5 )
+
+[sub_resource type="ProceduralSky" id=20]
+ground_bottom_color = Color( 0.647059, 0.839216, 0.945098, 1 )
+ground_horizon_color = Color( 0.839216, 0.917647, 0.980392, 1 )
+
+[sub_resource type="Environment" id=15]
+background_mode = 2
+background_sky = SubResource( 20 )
+ambient_light_color = Color( 0.545098, 0.384314, 0.592157, 1 )
+ambient_light_energy = 2.75
+ambient_light_sky_contribution = 0.0
+fog_color = Color( 0.630086, 0.501961, 0.701961, 1 )
+fog_depth_enabled = false
+fog_height_min = 0.2
+tonemap_mode = 3
+auto_exposure_enabled = true
+ss_reflections_enabled = true
+ssao_enabled = true
+ssao_radius = 2.0
+ssao_intensity = 2.0
+ssao_radius2 = 3.0
+ssao_intensity2 = 2.0
+ssao_bias = 0.236
+ssao_light_affect = 1.0
+ssao_quality = 2
+glow_enabled = true
+glow_strength = 0.75
+glow_bloom = 0.75
+glow_bicubic_upscale = true
+glow_high_quality = true
+
+[sub_resource type="StyleBoxFlat" id=19]
+bg_color = Color( 0.607843, 0, 0, 1 )
+
+[node name="PlayMode" type="Spatial"]
+script = ExtResource( 97 )
+
+[node name="World" type="Navigation" parent="." groups=["Nav"]]
+
+[node name="Characters" type="Node" parent="World"]
+
+[node name="Player2" parent="World/Characters" instance=ExtResource( 27 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.2211, 1.32961, 28.5512 )
+disable = true
+
+[node name="Player3" parent="World/Characters" instance=ExtResource( 27 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -71.991, 1.32961, 60.404 )
+disable = true
+
+[node name="Player4" parent="World/Characters" instance=ExtResource( 27 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -79.2073, 1.32961, -57.9376 )
+disable = true
+
+[node name="Player5" parent="World/Characters" instance=ExtResource( 27 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 74.1633, 1.32961, 59.556 )
+disable = true
+
+[node name="Meeting" type="Spatial" parent="World/Characters"]
+script = ExtResource( 1 )
+
+[node name="Player1" parent="World/Characters/Meeting" groups=["Players"] instance=ExtResource( 27 )]
+transform = Transform( 0.676285, 0, 0.73664, 0, 1, 0, -0.73664, 0, 0.676285, 5.77504, 9.26941, 0.938995 )
+player = 1
+
+[node name="Camera" type="Camera" parent="World/Characters/Meeting"]
+keep_aspect = 0
+fov = 120.0
+far = 1011.5
+script = ExtResource( 2 )
+
+[node name="NavigationMeshInstance" type="NavigationMeshInstance" parent="World"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.193726, 0.298714, -0.390427 )
+navmesh = SubResource( 18 )
+
+[node name="MeshInstance" type="MeshInstance" parent="World/NavigationMeshInstance"]
+transform = Transform( 82.325, 0, 0, 0, 0.184898, 0, 0, 0, 66.0621, 0, 0, 0 )
+mesh = SubResource( 2 )
+skin = SubResource( 17 )
+skeleton = NodePath("")
+material/0 = null
+
+[node name="StaticBody" type="StaticBody" parent="World/NavigationMeshInstance/MeshInstance"]
+collision_layer = 3
+
+[node name="CollisionShape" type="CollisionShape" parent="World/NavigationMeshInstance/MeshInstance/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0150669, 0 )
+shape = SubResource( 4 )
+
+[node name="Levels" type="Spatial" parent="World"]
+
+[node name="DreamGothHouse" parent="World/Levels" instance=ExtResource( 22 )]
+transform = Transform( 1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 159.11, -0.701286, 38.8161 )
+
+[node name="Castle" parent="World/Levels" instance=ExtResource( 21 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 104.228, 0, 77.2235 )
+
+[node name="FirstBossRoom" parent="World/Levels" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -123.742, 0, 0 )
+
+[node name="LowPolyToBlend" parent="." instance=ExtResource( 15 )]
+transform = Transform( 0.588025, 0, -0.808843, 0, 1, 0, 0.808843, 0, 0.588025, 36.4858, 0.362287, -2.45806 )
+
+[node name="Scatter" type="Spatial" parent="."]
+script = ExtResource( 96 )
+_scenes = [ ExtResource( 86 ), ExtResource( 72 ), ExtResource( 60 ), ExtResource( 93 ), ExtResource( 10 ), ExtResource( 85 ), ExtResource( 34 ), ExtResource( 71 ), ExtResource( 23 ), ExtResource( 43 ), ExtResource( 31 ), ExtResource( 92 ), ExtResource( 25 ), ExtResource( 95 ), ExtResource( 90 ), ExtResource( 18 ), ExtResource( 89 ), ExtResource( 77 ), ExtResource( 35 ), ExtResource( 8 ), ExtResource( 62 ), ExtResource( 36 ), ExtResource( 70 ), ExtResource( 26 ), ExtResource( 29 ), ExtResource( 5 ), ExtResource( 28 ), ExtResource( 61 ), ExtResource( 9 ), ExtResource( 33 ), ExtResource( 94 ), ExtResource( 30 ), ExtResource( 3 ), ExtResource( 58 ), ExtResource( 59 ), ExtResource( 40 ), ExtResource( 41 ), ExtResource( 76 ), ExtResource( 73 ), ExtResource( 88 ), ExtResource( 87 ), ExtResource( 68 ), ExtResource( 55 ), ExtResource( 66 ), ExtResource( 50 ), ExtResource( 53 ), ExtResource( 83 ), ExtResource( 46 ), ExtResource( 69 ), ExtResource( 65 ), ExtResource( 74 ), ExtResource( 57 ), ExtResource( 49 ), ExtResource( 81 ), ExtResource( 38 ), ExtResource( 64 ), ExtResource( 39 ), ExtResource( 79 ), ExtResource( 52 ), ExtResource( 37 ), ExtResource( 48 ), ExtResource( 63 ), ExtResource( 75 ), ExtResource( 67 ), ExtResource( 44 ), ExtResource( 47 ), ExtResource( 84 ), ExtResource( 51 ), ExtResource( 54 ), ExtResource( 45 ), ExtResource( 56 ), ExtResource( 80 ), ExtResource( 82 ), ExtResource( 78 ), ExtResource( 91 ), ExtResource( 6 ), ExtResource( 20 ), ExtResource( 16 ), ExtResource( 19 ), ExtResource( 12 ), ExtResource( 7 ), ExtResource( 32 ), ExtResource( 24 ), ExtResource( 17 ), ExtResource( 14 ), ExtResource( 13 ), ExtResource( 42 ) ]
+
+[node name="coffin" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( 2.03176, 0, -2.20725, 0, 3, 0, 2.20725, 0, 2.03176, 19.5005, 0.184898, 23.539 )
+
+[node name="coffin2" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( -2.06712, 0, -2.17417, 0, 3, 0, 2.17417, 0, -2.06712, 19.9367, 0.1849, 12.4347 )
+
+[node name="coffin3" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( 1.99375, 0, -2.24164, 0, 3, 0, 2.24164, 0, 1.99375, 25.2241, 0.184898, 14.9595 )
+
+[node name="coffin4" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( -2.95464, 0, -0.519709, 0, 3, 0, 0.519709, 0, -2.95464, 24.9089, 0.184898, 22.6348 )
+
+[node name="coffin5" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( -1.89123, 0, 2.32879, 0, 3, 0, -2.32879, 0, -1.89123, 17.7758, 0.184898, 20.6258 )
+
+[node name="coffin6" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( 1.72957, 0, -2.45124, 0, 3, 0, 2.45124, 0, 1.72957, 20.8108, 0.184898, 16.8588 )
+
+[node name="coffin7" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( 2.92016, 0, -0.687486, 0, 3, 0, 0.687486, 0, 2.92016, 25.2309, 0.184898, 10.75 )
+
+[node name="coffin8" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( 1.06524, 0, -2.80451, 0, 3, 0, 2.80451, 0, 1.06524, 26.5947, 0.1849, 18.012 )
+
+[node name="coffin11" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( -0.740716, 0, -2.90712, 0, 3, 0, 2.90712, 0, -0.740716, 32.0982, 0.184898, 10.0309 )
+
+[node name="bench" parent="Scatter" instance=ExtResource( 91 )]
+transform = Transform( 2.01485, 0, 2.2227, 0, 3, 0, -2.2227, 0, 2.01485, 30.899, 0.184898, 28.5877 )
+
+[node name="bench2" parent="Scatter" instance=ExtResource( 91 )]
+transform = Transform( 2.91226, 0, -0.72022, 0, 3, 0, 0.72022, 0, 2.91226, 20.8949, 0.184898, 31.1341 )
+
+[node name="bench3" parent="Scatter" instance=ExtResource( 91 )]
+transform = Transform( 0.110142, 0, 2.99798, 0, 3, 0, -2.99798, 0, 0.110142, 35.0643, 0.184898, 20.7729 )
+
+[node name="bench4" parent="Scatter" instance=ExtResource( 91 )]
+transform = Transform( 0.248079, 0, 2.98973, 0, 3, 0, -2.98973, 0, 0.248079, 35.9257, 0.1849, 12.6729 )
+
+[node name="altarStone" parent="Scatter" instance=ExtResource( 72 )]
+transform = Transform( -2.99909, 0, 0.0739055, 0, 3, 0, -0.0739055, 0, -2.99909, 3.80575, 0.184897, -24.597 )
+
+[node name="gravestoneCross" parent="Scatter" instance=ExtResource( 61 )]
+transform = Transform( -0.811976, 0, -2.88803, 0, 3, 0, 2.88803, 0, -0.811976, 30.5404, 0.184898, 2.14743 )
+
+[node name="gravestoneBevel2" parent="Scatter" instance=ExtResource( 5 )]
+transform = Transform( 0.114545, 0, -2.99781, 0, 3, 0, 2.99781, 0, 0.114545, 32.3528, 0.184897, -0.114834 )
+
+[node name="gravestoneBevel3" parent="Scatter" instance=ExtResource( 5 )]
+transform = Transform( -0.687852, 0, 2.92008, 0, 3, 0, -2.92008, 0, -0.687852, 32.9994, 0.184898, 5.44103 )
+
+[node name="gravestoneBevel4" parent="Scatter" instance=ExtResource( 5 )]
+transform = Transform( 2.26793, 0, -1.9638, 0, 3, 0, 1.9638, 0, 2.26793, 29.394, 0.184898, -3.82233 )
+
+[node name="gravestoneBevel5" parent="Scatter" instance=ExtResource( 5 )]
+transform = Transform( -2.48995, 0, -1.67337, 0, 3, 0, 1.67337, 0, -2.48995, 26.6741, 0.184898, 4.8816 )
+
+[node name="gravestoneBevel6" parent="Scatter" instance=ExtResource( 5 )]
+transform = Transform( 0.65405, 0, -2.92783, 0, 3, 0, 2.92783, 0, 0.65405, 25.5025, 0.184897, -7.78058 )
+
+[node name="gravestoneRoof" parent="Scatter" instance=ExtResource( 58 )]
+transform = Transform( 2.04375, 0, -2.19615, 0, 3, 0, 2.19615, 0, 2.04375, 34.3838, 0.184898, -5.76082 )
+
+[node name="gravestoneRoof2" parent="Scatter" instance=ExtResource( 58 )]
+transform = Transform( 2.11466, 0, 2.12796, 0, 3, 0, -2.12796, 0, 2.11466, 34.073, 0.184897, 2.05709 )
+
+[node name="gravestoneRoof3" parent="Scatter" instance=ExtResource( 58 )]
+transform = Transform( -2.51826, 0, -1.63044, 0, 3, 0, 1.63044, 0, -2.51826, 23.9353, 0.184897, 5.08757 )
+
+[node name="lanternCandle" parent="Scatter" instance=ExtResource( 50 )]
+transform = Transform( 2.55907, 0, -1.56561, 0, 3, 0, 1.56561, 0, 2.55907, 34.8352, 0.184897, -1.36007 )
+
+[node name="lanternCandle2" parent="Scatter" instance=ExtResource( 50 )]
+transform = Transform( -1.54772, 0, 2.56993, 0, 3, 0, -2.56993, 0, -1.54772, 19.3623, 0.184898, 6.02087 )
+
+[node name="lanternCandle3" parent="Scatter" instance=ExtResource( 50 )]
+transform = Transform( -0.345483, 0, 2.98004, 0, 3, 0, -2.98004, 0, -0.345483, 21.781, 0.184898, 25.1576 )
+
+[node name="bench5" parent="Scatter" instance=ExtResource( 91 )]
+transform = Transform( 3.99897, 0, -0.0907254, 0, 4, 0, 0.0907258, 0, 3.99897, 15.3248, 0.184898, 30.3829 )
+
+[node name="coffin9" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( 2.86443, 0, 0.891636, 0, 3, 0, -0.891636, 0, 2.86443, 16.1069, 0.184897, 17.6454 )
+
+[node name="coffin10" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( 2.01146, 0, -2.22576, 0, 3, 0, 2.22576, 0, 2.01146, 14.3801, 0.184899, 23.636 )
+
+[node name="coffin12" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( 2.89472, 0, 2.76054, 0, 4, 0, -2.76054, 0, 2.89472, 12.2329, 0.184897, 21.3806 )
+
+[node name="coffin13" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( -0.151026, 0, 3.99715, 0, 4, 0, -3.99715, 0, -0.151026, 15.7897, 0.184898, 26.5687 )
+
+[node name="coffin14" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( 3.34477, 0, -2.19374, 0, 4, 0, 2.19374, 0, 3.34477, 12.1293, 0.184898, 25.3295 )
+
+[node name="coffin15" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( 1.55572, 0, -3.68507, 0, 4, 0, 3.68507, 0, 1.55572, 14.3065, 0.184898, 18.7505 )
+
+[node name="coffin16" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( -3.60039, 0, -1.74275, 0, 4, 0, 1.74275, 0, -3.60039, 18.6509, 0.184898, 21.894 )
+
+[node name="coffin17" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( 0.707317, 0, -3.93697, 0, 4, 0, 3.93697, 0, 0.707317, 23.4462, 0.184897, 20.2372 )
+
+[node name="coffin18" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( -0.0762165, 0, 3.99927, 0, 4, 0, -3.99927, 0, -0.0762165, 21.6693, 0.184898, 18.904 )
+
+[node name="coffin19" parent="Scatter" instance=ExtResource( 86 )]
+transform = Transform( 0.0877547, 0, 3.99904, 0, 4, 0, -3.99904, 0, 0.0877547, 15.9259, 0.184897, 20.0971 )
+
+[node name="brickWall" parent="Scatter" instance=ExtResource( 10 )]
+transform = Transform( 0.0232713, 0, 3.99993, 0, 4, 0, -3.99993, 0, 0.0232713, 23.3909, 0.184898, 27.644 )
+
+[node name="brickWall2" parent="Scatter" instance=ExtResource( 10 )]
+transform = Transform( 2.943, 0, 2.70902, 0, 4, 0, -2.70902, 0, 2.943, 6.2425, -35.8151, 136.76 )
+
+[node name="brickWall3" parent="Scatter" instance=ExtResource( 10 )]
+transform = Transform( -2.75616, 0, -2.89889, 0, 4, 0, 2.89889, 0, -2.75616, 28.641, 0.184897, 24.4064 )
+
+[node name="stairsStone" parent="Scatter" instance=ExtResource( 6 )]
+transform = Transform( 2.65833, 0, -2.98886, 0, 4, 0, 2.98886, 0, 2.65833, -13.4628, 0.184898, -9.70221 )
+
+[node name="stairsStoneCorner" parent="Scatter" instance=ExtResource( 20 )]
+transform = Transform( -3.93952, 0, -0.692945, 0, 4, 0, 0.692945, 0, -3.93952, -5.4168, 0.184898, -17.0806 )
+
+[node name="stairsStoneHandrail" parent="Scatter" instance=ExtResource( 16 )]
+transform = Transform( -2.52164, 0, 3.10505, 0, 4, 0, -3.10505, 0, -2.52164, -7.42695, 0.184898, -25.6927 )
+
+[node name="stairsStoneRound" parent="Scatter" instance=ExtResource( 19 )]
+transform = Transform( 2.3061, 0, -3.26832, 0, 4, 0, 3.26832, 0, 2.3061, -16.4518, 0.184898, -1.18556 )
+
+[node name="stairsWood" parent="Scatter" instance=ExtResource( 12 )]
+transform = Transform( 3.89355, 0, -0.916648, 0, 4, 0, 0.916648, 0, 3.89355, -8.08542, 0.184898, -4.24788 )
+
+[node name="stairsWoodHandrail" parent="Scatter" instance=ExtResource( 7 )]
+transform = Transform( 1.42032, 0, -3.73934, 0, 4, 0, 3.73934, 0, 1.42032, 1.76939, 0.184896, -14.2522 )
+
+[node name="floor_stairs" parent="Scatter" instance=ExtResource( 32 )]
+transform = Transform( -2.78649, 0, 2.86975, 0, 4, 0, -2.86975, 0, -2.78649, -12.2186, 0.184898, 8.28957 )
+
+[node name="floor_stairsCornerInner" parent="Scatter" instance=ExtResource( 24 )]
+transform = Transform( -0.87166, 0, -3.90387, 0, 4, 0, 3.90387, 0, -0.87166, -8.74673, 0.184898, 15.5214 )
+
+[node name="floor_stairsCornerOuter" parent="Scatter" instance=ExtResource( 17 )]
+transform = Transform( -0.987621, 0, -3.87616, 0, 4, 0, 3.87616, 0, -0.987621, -18.5126, 0.184897, -11.5948 )
+
+[node name="floor_steps" parent="Scatter" instance=ExtResource( 14 )]
+transform = Transform( 1.41801, 0, 3.74022, 0, 4, 0, -3.74022, 0, 1.41801, 1.021, -0.506566, 22.743 )
+
+[node name="floor_stepsCornerInner" parent="Scatter" instance=ExtResource( 13 )]
+transform = Transform( -3.49676, 0, 1.94234, 0, 4, 0, -1.94234, 0, -3.49676, 3.585, 0.187, -31.851 )
+
+[node name="floor_stepsCornerOuter" parent="Scatter" instance=ExtResource( 42 )]
+transform = Transform( 3.82245, 0, -1.1785, 0, 4, 0, 1.1785, 0, 3.82245, 15.557, 0.187, -15.468 )
+
+[node name="Spatial" type="StaticBody" parent="."]
+
+[node name="MeshInstance3" type="MeshInstance" parent="Spatial"]
+transform = Transform( 82.325, 0, 0, 0, 0.184898, 0, 0, 0, 66.0621, -25.8466, 0.216085, 37.6607 )
+mesh = SubResource( 5 )
+material/0 = SubResource( 6 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Spatial"]
+transform = Transform( 82.325, 0, 0, 0, 0.184898, 0, 0, 0, 66.0621, -25.8466, 0.216085, 37.6607 )
+shape = SubResource( 7 )
+
+[node name="MeshInstance2" type="MeshInstance" parent="Spatial"]
+transform = Transform( 82.325, 0, 0, 0, 0.184898, 0, 0, 0, 66.0621, -25.4591, 0.216085, 40.2694 )
+mesh = SubResource( 5 )
+material/0 = SubResource( 8 )
+
+[node name="CollisionShape2" type="CollisionShape" parent="Spatial"]
+transform = Transform( 82.325, 0, 0, 0, 0.184898, 0, 0, 0, 66.0621, -25.4591, 0.216085, 40.2694 )
+shape = SubResource( 9 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Spatial"]
+transform = Transform( 82.325, 0, 0, 0, 0.184898, 0, 0, 0, 66.0621, -21.8329, 0.216085, 40.8367 )
+mesh = SubResource( 5 )
+material/0 = SubResource( 10 )
+
+[node name="CollisionShape3" type="CollisionShape" parent="Spatial"]
+transform = Transform( 82.325, 0, 0, 0, 0.184898, 0, 0, 0, 66.0621, -21.8329, 0.216085, 40.8367 )
+shape = SubResource( 11 )
+
+[node name="MeshInstance4" type="MeshInstance" parent="Spatial"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.84857, 4.54158, 0 )
+mesh = SubResource( 12 )
+material/0 = SubResource( 13 )
+
+[node name="CollisionShape4" type="CollisionShape" parent="Spatial"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.84857, 4.54158, 0 )
+shape = SubResource( 14 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 15 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="WorldEnvironment"]
+transform = Transform( 1, 0, 0, 0, -0.835626, 0.5493, 0, -0.5493, -0.835626, 0, 11.4906, -30.8685 )
+light_color = Color( 0.882353, 0.882353, 0.882353, 1 )
+light_energy = 2.0
+shadow_enabled = true
+
+[node name="Control" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Hud" parent="Control" groups=["Huds"] instance=ExtResource( 11 )]
+margin_bottom = 107.0
+
+[node name="Hud2" parent="Control" groups=["Huds"] instance=ExtResource( 11 )]
+margin_left = 270.0
+margin_right = 535.0
+margin_bottom = 107.0
+
+[node name="Panel" type="Panel" parent="Control"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -219.0
+margin_right = 272.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="GridContainer" type="GridContainer" parent="Control/Panel/ScrollContainer"]
+margin_right = 266.0
+margin_bottom = 320.0
+columns = 5
+
+[node name="Panel" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_right = 50.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel2" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 54.0
+margin_right = 104.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel3" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 108.0
+margin_right = 158.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel4" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 162.0
+margin_right = 212.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel5" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 216.0
+margin_right = 266.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel6" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_top = 54.0
+margin_right = 50.0
+margin_bottom = 104.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel7" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 54.0
+margin_top = 54.0
+margin_right = 104.0
+margin_bottom = 104.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel8" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 108.0
+margin_top = 54.0
+margin_right = 158.0
+margin_bottom = 104.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel9" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 162.0
+margin_top = 54.0
+margin_right = 212.0
+margin_bottom = 104.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel10" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 216.0
+margin_top = 54.0
+margin_right = 266.0
+margin_bottom = 104.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel11" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_top = 108.0
+margin_right = 50.0
+margin_bottom = 158.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel12" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 54.0
+margin_top = 108.0
+margin_right = 104.0
+margin_bottom = 158.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel13" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 108.0
+margin_top = 108.0
+margin_right = 158.0
+margin_bottom = 158.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel14" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 162.0
+margin_top = 108.0
+margin_right = 212.0
+margin_bottom = 158.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel15" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 216.0
+margin_top = 108.0
+margin_right = 266.0
+margin_bottom = 158.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel16" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_top = 162.0
+margin_right = 50.0
+margin_bottom = 212.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel17" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 54.0
+margin_top = 162.0
+margin_right = 104.0
+margin_bottom = 212.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel18" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 108.0
+margin_top = 162.0
+margin_right = 158.0
+margin_bottom = 212.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel19" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 162.0
+margin_top = 162.0
+margin_right = 212.0
+margin_bottom = 212.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel20" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 216.0
+margin_top = 162.0
+margin_right = 266.0
+margin_bottom = 212.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel21" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_top = 216.0
+margin_right = 50.0
+margin_bottom = 266.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel22" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 54.0
+margin_top = 216.0
+margin_right = 104.0
+margin_bottom = 266.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel23" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 108.0
+margin_top = 216.0
+margin_right = 158.0
+margin_bottom = 266.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel24" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 162.0
+margin_top = 216.0
+margin_right = 212.0
+margin_bottom = 266.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel25" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 216.0
+margin_top = 216.0
+margin_right = 266.0
+margin_bottom = 266.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel26" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_top = 270.0
+margin_right = 50.0
+margin_bottom = 320.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel27" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 54.0
+margin_top = 270.0
+margin_right = 104.0
+margin_bottom = 320.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel28" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 108.0
+margin_top = 270.0
+margin_right = 158.0
+margin_bottom = 320.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel29" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 162.0
+margin_top = 270.0
+margin_right = 212.0
+margin_bottom = 320.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )
+
+[node name="Panel30" type="Panel" parent="Control/Panel/ScrollContainer/GridContainer"]
+margin_left = 216.0
+margin_top = 270.0
+margin_right = 266.0
+margin_bottom = 320.0
+rect_min_size = Vector2( 50, 50 )
+custom_styles/panel = SubResource( 19 )

@@ -10,9 +10,10 @@ public class Jump : State {
     public override void Enter() {
         base.Enter();
         move = self.move;
-        move.gravity = -40f;
         self.snap = Vector3.Zero;
-        move.modVelocity = 30; //Bug: Double Jump is possible by pressing x fast. (Might be fixed)
+        move.modVelocity = 15; //Bug: Double Jump is possible by pressing x fast. (Might be fixed)
+        animator.Play("Jump");
+        animator.Advance(.5f);
         //startPoint = self.GlobalTransform.origin.y;
     }
     public override void Update() {
@@ -22,7 +23,6 @@ public class Jump : State {
     }
     public override void Exit() {
         base.Exit();
-        move.gravity = 0;
         //GD.Print(startPoint, ", ", self.GlobalTransform.origin.y);
     }
 }

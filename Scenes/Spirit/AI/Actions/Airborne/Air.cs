@@ -8,7 +8,6 @@ public class Air : State {
     public override void Enter() {
         base.Enter();
         self.snap = Vector3.Zero;
-        self.move.gravity = -40;
     }
     public override void Update() {
         base.Update();
@@ -16,7 +15,6 @@ public class Air : State {
     }
     public override void Exit() {
         base.Exit();
-        self.move.gravity = 0;
     }
 }
 

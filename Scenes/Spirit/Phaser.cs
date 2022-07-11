@@ -70,6 +70,9 @@ public class Phaser : Area {
         if(spirit.stats.phasePoints >= phasable && (spirit.GetCollisionLayerBit(0) || spirit.GetCollisionMaskBit(0))) {
             spirit.SetCollisionLayerBit(0, false);
             spirit.SetCollisionMaskBit(0, false);
+            spirit.move.gravity = -1f;
+            spirit.move.velocity = new Vector3(spirit.move.velocity.x, 0, spirit.move.velocity.z);
+            //spirit.sm.mechEvents[STATETYPE.PHASE][MECHEVENT.PHASE].validate(self);
         }
         spirit.hud.phaseProgress.Value = spirit.stats.phasePoints * 100;
     }
@@ -78,13 +81,15 @@ public class Phaser : Area {
             && !(spirit.GetCollisionLayerBit(0) || spirit.GetCollisionMaskBit(0))) {
             spirit.SetCollisionLayerBit(0, true);
             spirit.SetCollisionMaskBit(0, true);
+            spirit.move.gravity = -45f;
+            //spirit.sm.mechEvents[STATETYPE.PHASE][MECHEVENT.UNPHASE].validate(self);
         }
     }
     public bool isOverlapping() {
         Godot.Collections.Array bodies = GetOverlappingBodies();
         bool result = false;
         for(int i = 0; i < bodies.Count; i++) {
-            if(bodies[i] is PhysicsBody body && body.GetCollisionLayerBit(0) == true) {
+            if(bodies[i] is PhysicsBody body && body.GetCollisionLayerBit(0) && !body.GetCollisionLayerBit(1)) {
                 result = true;
                 //if(self.player == 1)
                 //GD.Print(body.Name);

@@ -9,13 +9,13 @@ public class BAction : BNode {
         actState = _actState;
     }
     public BSIGNAL aProcess() {
-        State curState = self.sm.currentState;
+        State curState = self.sm.aiState;
         if(curState.name != actState) {//Prior node should return success before
             //self.sm.cancel();//transitioning to next action node. If it doesn't then we Yeet it so
-            self.sm.setNextState(self.sm.enumToState(actState));//that STAGE.EXIT goes through here.
+            self.sm.setNextState(self.sm.enumToState(actState), curState);//that STAGE.EXIT goes through here.
         }
-        self.sm.process(self.idleDelta);//BAction only processes its own state.
-        return  self.sm.currentState.sSignal;
+        self.sm.aiProcess(self.idleDelta);//BAction only processes its own state.
+        return  self.sm.aiState.sSignal;
     }//Decorator still has to be added in.
 }
 // public BAction(KinematicBody _self, BTYPE _bType, Tick pm) : base(_self, _bType) {
